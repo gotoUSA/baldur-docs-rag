@@ -1,0 +1,21 @@
+# Local-only database for this learning project. The port is bound to loopback,
+# so trust auth is reachable only from this machine.
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: baldur_rag
+      POSTGRES_USER: baldur_rag
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - baldur_rag_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U baldur_rag -d baldur_rag"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  baldur_rag_pgdata:

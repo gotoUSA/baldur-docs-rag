@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "baldur-docs-rag"
+version = "0.1.0"
+description = "Small RAG over the public Baldur documentation, built to learn and explain RAG."
+requires-python = ">=3.12"
+dependencies = [
+    "google-genai>=2.34,<3",
+    "httpx>=0.28,<1",
+    "pgvector>=0.5,<0.6",
+    "psycopg[binary]>=3.3,<4",
+    "pydantic>=2.12,<3",
+    "pydantic-settings>=2.16,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=9,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# -ra lists every skipped test in the summary, so a missing database stays visible.
+addopts = "-ra --strict-markers"
+markers = [
+    "postgres: needs the PostgreSQL container from docker-compose.yml",
+    "gemini: calls the real Gemini API with the key in .env",
+]
