@@ -1,9 +1,10 @@
-"""Command line entry point: ingest the documents, or search them."""
+"""Command line entry point: ingest the documents, search them, or ask a question."""
 
 import argparse
 import logging
 import sys
 
+from baldur_docs_rag.answer import AnswerResult, GeminiAnswerer, run_answer
 from baldur_docs_rag.config import load_settings
 from baldur_docs_rag.embedding import GeminiEmbedder
 from baldur_docs_rag.errors import BaldurDocsRagError, EmbeddingQuotaError
@@ -12,6 +13,7 @@ from baldur_docs_rag.search import SearchResult, run_search
 from baldur_docs_rag.store import Store
 
 PREVIEW_CHARS = 500
+NOT_IN_DOCUMENTS = "The documents do not contain an answer to this question."
 EXIT_OK = 0
 EXIT_FAILED = 1
 
@@ -54,12 +56,27 @@ def format_search_result(result: SearchResult) -> str:
     return "\n".join(lines)
 
 
+def format_answer(result: AnswerResult) -> str:
+    commit_line = f"Documents from baldur commit {result.source_commit}"
+    if result.answer is None:
+        return f"{NOT_IN_DOCUMENTS}\n\n{commit_line}"
+    lines = [result.answer, "", commit_line]
+    for source in result.sources:
+        hit = source.hit
+        lines.append(
+            f"[{source.number}] {hit.source_path}#{hit.chunk_index} {hit.heading}"
+        )
+    return "\n".join(lines)
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="baldur_docs_rag")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("ingest", help="embed the Baldur documents and store them")
     search = commands.add_parser("search", help="show the chunks closest to a question")
     search.add_argument("question")
+    ask = commands.add_parser("ask", help="answer a question from the documents")
+    ask.add_argument("question")
     return parser
 
 
@@ -76,6 +93,18 @@ def main(argv: list[str] | None = None) -> int:
                     f"Ingest complete: {result.total_chunks} chunks from baldur commit"
                     f" {result.source_commit} ({result.embedded_chunks} embedded in this run)"
                 )
+            elif args.command == "ask":
+                print(
+                    format_answer(
+                        run_answer(
+                            args.question,
+                            settings,
+                            embedder,
+                            GeminiAnswerer(settings),
+                            store,
+                        )
+                    )
+                )
             else:
                 print(
                     format_search_result(
@@ -83,6 +112,9 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 )
     except EmbeddingQuotaError as e:
+        if args.command != "ingest":
+            print(f"Failed: {e}", file=sys.stderr)
+            return EXIT_FAILED
         print(
             f"Stopped: {e}\nFinished batches are saved. Run the same command later to resume.",
             file=sys.stderr,

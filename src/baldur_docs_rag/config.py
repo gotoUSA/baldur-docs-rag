@@ -46,6 +46,10 @@ class Settings(BaseSettings):
     )
     embedding_timeout_ms: int = Field(default=60_000, gt=0)
 
+    answer_model: str = Field(default="gemini-3.6-flash", min_length=1)
+    # In seconds, unlike embedding_timeout_ms. One real call took 50.9 seconds.
+    answer_timeout_seconds: float = Field(default=120, gt=0)
+
     chunk_max_chars: int = Field(default=2000, ge=200)
     search_top_k: int = Field(default=5, ge=1, le=50)
 

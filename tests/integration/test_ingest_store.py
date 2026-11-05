@@ -7,6 +7,7 @@ import psycopg
 import pytest
 from psycopg import sql
 
+from baldur_docs_rag.answer import ModelAnswer, run_answer
 from baldur_docs_rag.config import Settings
 from baldur_docs_rag.errors import CorpusNotReadyError, EmbeddingQuotaError, StoreError
 from baldur_docs_rag.ingest import run_ingest
@@ -268,3 +269,46 @@ def test_pacing_stays_under_the_per_minute_text_limit(repo, database_url):
 
     free_tier_texts_per_minute = 100
     assert naps[0] >= 60 * settings.embedding_batch_size / free_tier_texts_per_minute
+
+
+class FixedAnswerer:
+    def __init__(self, reply):
+        self.reply = reply
+        self.questions = []
+
+    def answer(self, question, hits):
+        self.questions.append((question, [hit.source_path for hit in hits]))
+        return self.reply
+
+
+def test_answer_cites_a_chunk_stored_in_the_database(repo, database_url):
+    settings = make_settings(repo, database_url)
+    embedder = FakeEmbedder(AXES)
+    answerer = FixedAnswerer(ModelAnswer(answerable=True, answer="x", citations=[1]))
+
+    with Store(database_url) as store:
+        ingested = run_ingest(settings, embedder, store, sleep=no_sleep)
+        result = run_answer(
+            "tell me about charlie", settings, embedder, answerer, store
+        )
+
+    assert result.source_commit == ingested.source_commit
+    assert result.sources[0].hit.source_path == "docs/charlie.md"
+    assert answerer.questions[0][1][0] == "docs/charlie.md"
+
+
+def test_answer_is_refused_before_any_model_call_while_ingest_is_incomplete(
+    repo, database_url
+):
+    settings = make_settings(repo, database_url)
+    answerer = FixedAnswerer(ModelAnswer(answerable=True, answer="x", citations=[1]))
+
+    with Store(database_url) as store:
+        with pytest.raises(EmbeddingQuotaError):
+            run_ingest(
+                settings, FakeEmbedder(AXES, fail_on_call=2), store, sleep=no_sleep
+            )
+        with pytest.raises(CorpusNotReadyError):
+            run_answer("alpha", settings, FakeEmbedder(AXES), answerer, store)
+
+    assert answerer.questions == []

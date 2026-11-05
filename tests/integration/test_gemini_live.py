@@ -2,9 +2,11 @@
 
 import pytest
 
+from baldur_docs_rag.answer import GeminiAnswerer
 from baldur_docs_rag.config import ENV_FILE, load_settings
 from baldur_docs_rag.embedding import GeminiEmbedder
-from baldur_docs_rag.errors import EmbeddingQuotaError
+from baldur_docs_rag.errors import AnswerQuotaError, EmbeddingQuotaError
+from baldur_docs_rag.store import SearchHit
 
 pytestmark = pytest.mark.gemini
 
@@ -64,3 +66,42 @@ def test_query_is_closer_to_the_related_document(embedder):
     )
 
     assert cosine(query, related) > cosine(query, unrelated)
+
+
+EVIDENCE = [
+    SearchHit(
+        "docs/concepts/foundations/bulkhead.md",
+        0,
+        "Bulkhead",
+        "A bulkhead gives each dependency its own fixed slice of capacity.",
+        0.74,
+    )
+]
+
+
+@pytest.fixture
+def answerer():
+    if not ENV_FILE.exists():
+        pytest.skip(".env with GEMINI_API_KEY is not present")
+    return GeminiAnswerer(load_settings())
+
+
+def _answer_or_skip(answerer, question):
+    try:
+        return answerer.answer(question, EVIDENCE)
+    except AnswerQuotaError as e:
+        pytest.skip(f"Gemini quota exhausted: {e}")
+
+
+def test_answer_cites_the_evidence_it_used(answerer):
+    reply = _answer_or_skip(answerer, "What does a bulkhead give each dependency?")
+
+    assert reply.answerable is True
+    assert reply.citations == [1]
+    assert reply.answer.strip()
+
+
+def test_related_question_without_an_answer_is_refused(answerer):
+    reply = _answer_or_skip(answerer, "In what year was the bulkhead first released?")
+
+    assert reply.answerable is False

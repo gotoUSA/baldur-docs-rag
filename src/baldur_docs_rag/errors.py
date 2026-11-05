@@ -21,6 +21,14 @@ class EmbeddingQuotaError(EmbeddingError):
     """The embedding API rejected the request because a quota was reached."""
 
 
+class AnswerError(BaldurDocsRagError):
+    """The answer API failed or returned an unusable response."""
+
+
+class AnswerQuotaError(AnswerError):
+    """The answer API rejected the request because a quota was reached."""
+
+
 class StoreError(BaldurDocsRagError):
     """A PostgreSQL operation failed."""
 

@@ -10,4 +10,11 @@
   needs two days, because the 1,083 chunks exceed the limit of 1,000 texts per day.
 - `python -m baldur_docs_rag search "<question>"`: shows the closest chunks with score,
   file path, heading and the source commit. It refuses to run on an incomplete ingest.
+- `python -m baldur_docs_rag ask "<question>"`: answers from the closest chunks with Gemini
+  and lists the cited sources with the source commit. It says so when the documents do not
+  contain the answer, and fails instead of showing a source that was not retrieved.
 - `docker-compose.yml`: local PostgreSQL with pgvector, reachable only from this machine.
+
+### Fixed
+
+- A quota stop during `search` no longer says that ingest batches were saved.
