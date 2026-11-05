@@ -8,6 +8,7 @@ from baldur_docs_rag.answer import AnswerResult, GeminiAnswerer, run_answer
 from baldur_docs_rag.config import load_settings
 from baldur_docs_rag.embedding import GeminiEmbedder
 from baldur_docs_rag.errors import BaldurDocsRagError, EmbeddingQuotaError
+from baldur_docs_rag.evaluation import EvalReport, run_evaluation
 from baldur_docs_rag.ingest import run_ingest
 from baldur_docs_rag.search import SearchResult, run_search
 from baldur_docs_rag.store import Store
@@ -69,6 +70,36 @@ def format_answer(result: AnswerResult) -> str:
     return "\n".join(lines)
 
 
+def format_evaluation(report: EvalReport) -> str:
+    info = report.run_info
+    summary = report.summary
+    lines = [
+        f"Run started {info['started_at']}",
+        f"Baldur commit {info['source_commit']}",
+        f"Models {info['embedding_model']} and {info['answer_model']}",
+        f"Questions {info['question_count']}: {info['authoring']}",
+        "",
+        f"Retrieval hit rate (top {info['search_top_k']}): {summary.retrieval_hit}",
+        f"Citation match: {summary.citation_match}",
+        f"Refusal rate, related but unanswerable: {summary.refusal_related}",
+        f"Refusal rate, unrelated: {summary.refusal_unrelated}",
+        f"Wrong refusal rate, answerable: {summary.wrong_refusal}",
+        f"Answers graded correct: {summary.graded_correct}"
+        f" ({summary.ungraded_answers} not graded)",
+        f"Rejected replies: {summary.rejected_answers}",
+        "",
+        f"Pending: {summary.pending_retrievals} retrievals,"
+        f" {summary.pending_answers} answers",
+        f"Results: {report.results_path}",
+    ]
+    if report.stopped_reason is not None:
+        lines.append(
+            f"Stopped: {report.stopped_reason}\n"
+            "Finished questions are saved. Run the same command later to resume."
+        )
+    return "\n".join(lines)
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="baldur_docs_rag")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -77,6 +108,7 @@ def _build_parser() -> argparse.ArgumentParser:
     search.add_argument("question")
     ask = commands.add_parser("ask", help="answer a question from the documents")
     ask.add_argument("question")
+    commands.add_parser("evaluate", help="measure the fixed question set")
     return parser
 
 
@@ -93,6 +125,14 @@ def main(argv: list[str] | None = None) -> int:
                     f"Ingest complete: {result.total_chunks} chunks from baldur commit"
                     f" {result.source_commit} ({result.embedded_chunks} embedded in this run)"
                 )
+            elif args.command == "evaluate":
+                report = run_evaluation(
+                    settings, embedder, GeminiAnswerer(settings), store
+                )
+                print(format_evaluation(report))
+                # Unfinished numbers must not look like a finished evaluation.
+                if not report.summary.complete:
+                    return EXIT_FAILED
             elif args.command == "ask":
                 print(
                     format_answer(

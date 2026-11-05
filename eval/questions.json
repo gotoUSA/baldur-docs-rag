@@ -1,0 +1,224 @@
+{
+  "authoring": "AI draft from randomly sampled chunks; user approved without edits.",
+  "sampling": "eval/sample_chunks.py, seed 20261105. Answerable questions use the first usable sampled chunks, related_unanswerable the next ones.",
+  "skipped_chunks": [
+    {"chunk": "docs/reference/interfaces/repository_models.md#1", "reason": "only a list of identifiers"},
+    {"chunk": "README.ko.md#7", "reason": "only a list of links"},
+    {"chunk": "docs/runbooks/slack-alert-action-buttons.md#12", "reason": "only a list of links"},
+    {"chunk": "docs/concepts/oss-vs-pro.md#6", "reason": "only a list of links"}
+  ],
+  "questions": [
+    {
+      "id": "a01",
+      "group": "answerable",
+      "question": "Baldur를 쓰면 LLM API 호출 한도 자체가 늘어나나요?",
+      "expected_chunks": [{"source_path": "docs/llm-rate-limits.md", "chunk_index": 13}]
+    },
+    {
+      "id": "a02",
+      "group": "answerable",
+      "question": "파드 여러 대가 DB 한 대를 같이 쓰는데, DB가 멈춰도 파드가 한꺼번에 트래픽에서 빠지지 않게 하려면 뭘 바꿔야 하나요?",
+      "expected_chunks": [
+        {"source_path": "docs/concepts/oss/health-check.md", "chunk_index": 7},
+        {"source_path": "docs/concepts/oss/health-check.md", "chunk_index": 5},
+        {"source_path": "docs/reference/env-vars.md", "chunk_index": 17},
+        {"source_path": "docs/troubleshooting.md", "chunk_index": 19}
+      ]
+    },
+    {
+      "id": "a03",
+      "group": "answerable",
+      "question": "While a worker is shutting down gracefully, what does the readiness endpoint return so Kubernetes stops sending it new connections?",
+      "expected_chunks": [{"source_path": "docs/runbooks/gunicorn-graceful-shutdown.md", "chunk_index": 13}]
+    },
+    {
+      "id": "a04",
+      "group": "answerable",
+      "question": "Which frameworks have a getting started guide?",
+      "expected_chunks": [
+        {"source_path": "docs/getting-started/index.md", "chunk_index": 2},
+        {"source_path": "README.ko.md", "chunk_index": 7},
+        {"source_path": "README.md", "chunk_index": 10}
+      ]
+    },
+    {
+      "id": "a05",
+      "group": "answerable",
+      "question": "유료 버전은 한 달에 얼마인가요?",
+      "expected_chunks": [
+        {"source_path": "docs/faq.md", "chunk_index": 11},
+        {"source_path": "docs/pricing.md", "chunk_index": 1},
+        {"source_path": "docs/what-is-baldur.md", "chunk_index": 4}
+      ]
+    },
+    {
+      "id": "a06",
+      "group": "answerable",
+      "question": "생존 신호 유예 시간을 정할 때 데몬 워커 반복 시간 지표를 쓰면 왜 안 되나요?",
+      "expected_chunks": [{"source_path": "docs/runbooks/meta-watchdog-escalation-response.md", "chunk_index": 35}]
+    },
+    {
+      "id": "a07",
+      "group": "answerable",
+      "question": "If someone flips the kill switch on one server, how long until the other workers follow?",
+      "expected_chunks": [
+        {"source_path": "docs/concepts/oss/system-control.md", "chunk_index": 5},
+        {"source_path": "docs/concepts/oss/system-control.md", "chunk_index": 2},
+        {"source_path": "docs/concepts/oss/system-control.md", "chunk_index": 9},
+        {"source_path": "docs/concepts/oss/system-control.md", "chunk_index": 10},
+        {"source_path": "docs/reference/env-vars.md", "chunk_index": 13},
+        {"source_path": "docs/concepts/foundations/storage-backends.md", "chunk_index": 3},
+        {"source_path": "docs/concepts/pro/governance.md", "chunk_index": 5}
+      ]
+    },
+    {
+      "id": "a08",
+      "group": "answerable",
+      "question": "파이썬 requests 라이브러리에 타임아웃을 안 넣으면 기본으로 몇 초 기다리나요?",
+      "expected_chunks": [
+        {"source_path": "docs/troubleshooting.md", "chunk_index": 9},
+        {"source_path": "docs/runbooks/protect-hang-troubleshooting.md", "chunk_index": 12}
+      ]
+    },
+    {
+      "id": "a09",
+      "group": "answerable",
+      "question": "Which settings areas can't be edited from the web console and need the REST API instead?",
+      "expected_chunks": [{"source_path": "docs/runbooks/runtime-config-change.md", "chunk_index": 32}]
+    },
+    {
+      "id": "a10",
+      "group": "answerable",
+      "question": "똑같은 장애 알림이 계속 쏟아지면 채널이 도배되지 않게 어떻게 막아 주나요?",
+      "expected_chunks": [
+        {"source_path": "docs/concepts/pro/unified-notification.md", "chunk_index": 3},
+        {"source_path": "docs/concepts/pro/unified-notification.md", "chunk_index": 5},
+        {"source_path": "docs/concepts/pro/unified-notification.md", "chunk_index": 6},
+        {"source_path": "docs/concepts/pro/unified-notification.md", "chunk_index": 7}
+      ]
+    },
+    {
+      "id": "a11",
+      "group": "answerable",
+      "question": "장고 예제를 실행하면 마이그레이션이 안 됐다는 안내가 뜨는데, migrate를 해도 왜 안 사라지나요?",
+      "expected_chunks": [{"source_path": "docs/getting-started/django.md", "chunk_index": 4}]
+    },
+    {
+      "id": "a12",
+      "group": "answerable",
+      "question": "What should the first argument of the protection decorator look like, and what else depends on it?",
+      "expected_chunks": [{"source_path": "docs/concepts/foundations/composition.md", "chunk_index": 6}]
+    },
+    {
+      "id": "a13",
+      "group": "answerable",
+      "question": "실패한 작업을 Redis에 쌓고 있는데 요약 화면 숫자가 전부 0으로 나오는 이유가 뭔가요?",
+      "expected_chunks": [{"source_path": "docs/concepts/foundations/dashboard-service.md", "chunk_index": 3}]
+    },
+    {
+      "id": "a14",
+      "group": "answerable",
+      "question": "How long does an older minor version keep getting patches after a new one ships?",
+      "expected_chunks": [{"source_path": "docs/compatibility.md", "chunk_index": 6}]
+    },
+    {
+      "id": "a15",
+      "group": "answerable",
+      "question": "회로가 열려서 쌓인 작업을 복구 후 자동으로 재처리하려면 실패 유형 매핑에 추가해야 하나요?",
+      "expected_chunks": [{"source_path": "docs/runbooks/dlq-two-layer-activation.md", "chunk_index": 21}]
+    },
+    {
+      "id": "a16",
+      "group": "answerable",
+      "question": "After startup, how can I confirm that my Redis connection is really using TLS?",
+      "expected_chunks": [{"source_path": "docs/runbooks/secure-deployment.md", "chunk_index": 11}]
+    },
+    {
+      "id": "a17",
+      "group": "answerable",
+      "question": "Celery 작업이 재시도를 다 쓰고 실패했을 때 다시 돌리려면 제가 뭘 직접 작성해야 하나요?",
+      "expected_chunks": [
+        {"source_path": "docs/celery-max-retries.md", "chunk_index": 5},
+        {"source_path": "docs/concepts/foundations/dlq-replay.md", "chunk_index": 20}
+      ]
+    },
+    {
+      "id": "a18",
+      "group": "answerable",
+      "question": "If my code puts items on the PRO in-memory replay queue, will Baldur take them off and process them for me?",
+      "expected_chunks": [{"source_path": "docs/reference/pro/replay.md", "chunk_index": 0}]
+    },
+    {
+      "id": "r01",
+      "group": "related_unanswerable",
+      "question": "Baldur 첫 공개 버전에서 서킷 브레이커의 기본 실패 임계값은 얼마였나요?",
+      "expected_chunks": []
+    },
+    {
+      "id": "r02",
+      "group": "related_unanswerable",
+      "question": "How do I protect Flask-SocketIO event handlers with Baldur?",
+      "expected_chunks": []
+    },
+    {
+      "id": "r03",
+      "group": "related_unanswerable",
+      "question": "PRO 요금제에 학생이나 비영리 단체 할인이 있나요?",
+      "expected_chunks": []
+    },
+    {
+      "id": "r04",
+      "group": "related_unanswerable",
+      "question": "Which Linux kernel version does the thread-pool bulkhead require?",
+      "expected_chunks": []
+    },
+    {
+      "id": "r05",
+      "group": "related_unanswerable",
+      "question": "How do I set the canary traffic percentage with an Istio VirtualService?",
+      "expected_chunks": []
+    },
+    {
+      "id": "r06",
+      "group": "related_unanswerable",
+      "question": "Baldur를 도입한 회사 이름을 알려 주세요.",
+      "expected_chunks": []
+    },
+    {
+      "id": "r07",
+      "group": "related_unanswerable",
+      "question": "Does Baldur ship a built-in task queue adapter for Amazon SQS?",
+      "expected_chunks": []
+    },
+    {
+      "id": "r08",
+      "group": "related_unanswerable",
+      "question": "PRO 요금은 계좌이체로 낼 수 있나요?",
+      "expected_chunks": []
+    },
+    {
+      "id": "u01",
+      "group": "unrelated",
+      "question": "오늘 서울 날씨 어때요?",
+      "expected_chunks": []
+    },
+    {
+      "id": "u02",
+      "group": "unrelated",
+      "question": "What is the capital of Australia?",
+      "expected_chunks": []
+    },
+    {
+      "id": "u03",
+      "group": "unrelated",
+      "question": "파이썬에서 리스트를 내림차순으로 정렬하려면 어떻게 하나요?",
+      "expected_chunks": []
+    },
+    {
+      "id": "u04",
+      "group": "unrelated",
+      "question": "Who won the 2018 FIFA World Cup?",
+      "expected_chunks": []
+    }
+  ]
+}

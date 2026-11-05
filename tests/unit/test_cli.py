@@ -1,11 +1,15 @@
 import io
 import sys
+from pathlib import Path
 from types import SimpleNamespace
+
+import pytest
 
 from baldur_docs_rag import cli
 from baldur_docs_rag.answer import AnswerResult, CitedSource
 from baldur_docs_rag.cli import PREVIEW_CHARS, format_search_result
 from baldur_docs_rag.errors import EmbeddingQuotaError
+from baldur_docs_rag.evaluation import EvalReport, EvalSummary, Ratio
 from baldur_docs_rag.ingest import pacing_delay_seconds
 from baldur_docs_rag.search import SearchResult
 from baldur_docs_rag.store import SearchHit
@@ -139,3 +143,57 @@ def test_quota_stop_during_ingest_still_explains_resuming(monkeypatch, capsys):
 
     assert cli.main(["ingest"]) == cli.EXIT_FAILED
     assert "Finished batches" in capsys.readouterr().err
+
+
+def _report(summary):
+    run_info = {
+        "started_at": "2026-11-05T10:00:00+00:00",
+        "source_commit": "abc123",
+        "embedding_model": "embed-model",
+        "answer_model": "answer-model",
+        "question_count": 30,
+        "authoring": "AI draft",
+        "search_top_k": 5,
+    }
+    return EvalReport(Path("run.jsonl"), run_info, summary, None)
+
+
+def _summary(pending_answers=0):
+    measured = Ratio(1, 2)
+    return EvalSummary(
+        retrieval_hit=measured,
+        citation_match=Ratio(0, 0),
+        refusal_related=measured,
+        refusal_unrelated=measured,
+        wrong_refusal=measured,
+        graded_correct=Ratio(0, 0),
+        ungraded_answers=1,
+        rejected_answers=0,
+        pending_retrievals=0,
+        pending_answers=pending_answers,
+    )
+
+
+def test_evaluation_output_states_the_conditions_and_unmeasured_numbers():
+    output = cli.format_evaluation(_report(_summary()))
+
+    for expected in ("2026-11-05", "abc123", "embed-model", "answer-model", "AI draft"):
+        assert expected in output
+    assert "Retrieval hit rate (top 5): 1/2 (50.0%)" in output
+    assert "Citation match: not measured" in output
+
+
+@pytest.mark.parametrize(
+    "pending, expected_code", [(0, cli.EXIT_OK), (3, cli.EXIT_FAILED)]
+)
+def test_unfinished_evaluation_exits_as_a_failure(monkeypatch, pending, expected_code):
+    monkeypatch.setattr(cli, "configure_output", lambda: None)
+    monkeypatch.setattr(cli, "load_settings", lambda: SimpleNamespace(database_url="x"))
+    monkeypatch.setattr(cli, "GeminiEmbedder", lambda _settings: object())
+    monkeypatch.setattr(cli, "GeminiAnswerer", lambda _settings: object())
+    monkeypatch.setattr(cli, "Store", lambda _url: _FakeStore())
+    monkeypatch.setattr(
+        cli, "run_evaluation", lambda *_args: _report(_summary(pending))
+    )
+
+    assert cli.main(["evaluate"]) == expected_code

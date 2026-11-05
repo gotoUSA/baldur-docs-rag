@@ -29,6 +29,14 @@ class AnswerQuotaError(AnswerError):
     """The answer API rejected the request because a quota was reached."""
 
 
+class AnswerRejectedError(AnswerError):
+    """The answer API replied, but the reply cannot be shown as an answer."""
+
+
+class EvaluationError(BaldurDocsRagError):
+    """The evaluation questions, results or grades could not be used."""
+
+
 class StoreError(BaldurDocsRagError):
     """A PostgreSQL operation failed."""
 

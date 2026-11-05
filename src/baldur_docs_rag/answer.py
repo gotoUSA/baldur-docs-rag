@@ -14,8 +14,8 @@ from google.genai.interactions import Interaction
 from pydantic import BaseModel, ValidationError
 
 from baldur_docs_rag.config import Settings
-from baldur_docs_rag.errors import AnswerError, AnswerQuotaError
-from baldur_docs_rag.search import QueryEmbedder, run_search
+from baldur_docs_rag.errors import AnswerError, AnswerQuotaError, AnswerRejectedError
+from baldur_docs_rag.search import QueryEmbedder, SearchResult, run_search
 from baldur_docs_rag.store import SearchHit, Store
 
 logger = logging.getLogger(__name__)
@@ -104,38 +104,41 @@ class GeminiAnswerer:
             logger.warning(
                 "answer.response_failed", extra={"status": interaction.status}
             )
-            raise AnswerError(f"Gemini stopped with status {interaction.status}")
+            raise AnswerRejectedError(
+                f"Gemini stopped with status {interaction.status}"
+            )
         try:
             return ModelAnswer.model_validate_json(interaction.output_text or "")
         except ValidationError as e:
             logger.warning("answer.response_failed", extra={"error": "invalid_json"})
-            raise AnswerError("Gemini returned an answer in the wrong format") from e
+            raise AnswerRejectedError(
+                "Gemini returned an answer in the wrong format"
+            ) from e
 
 
 def _cited_sources(reply: ModelAnswer, hits: Sequence[SearchHit]) -> list[CitedSource]:
     if not reply.answer.strip():
-        raise AnswerError("Gemini marked the question answerable but gave no answer")
+        raise AnswerRejectedError(
+            "Gemini marked the question answerable but gave no answer"
+        )
     if not reply.citations:
-        raise AnswerError("Gemini gave an answer without citing any evidence")
+        raise AnswerRejectedError("Gemini gave an answer without citing any evidence")
 
     # A number outside the evidence means the model invented a source.
     invalid = [n for n in reply.citations if not 1 <= n <= len(hits)]
     if invalid:
         logger.warning("answer.citation_blocked", extra={"numbers": invalid})
-        raise AnswerError(f"Gemini cited evidence that was not retrieved: {invalid}")
+        raise AnswerRejectedError(
+            f"Gemini cited evidence that was not retrieved: {invalid}"
+        )
 
     unique_numbers = dict.fromkeys(reply.citations)
     return [CitedSource(n, hits[n - 1]) for n in unique_numbers]
 
 
-def run_answer(
-    question: str,
-    settings: Settings,
-    embedder: QueryEmbedder,
-    answerer: Answerer,
-    store: Store,
+def answer_from_hits(
+    question: str, found: SearchResult, answerer: Answerer
 ) -> AnswerResult:
-    found = run_search(question, settings, embedder, store)
     if not found.hits:
         return AnswerResult(found.source_commit, answer=None, sources=[])
 
@@ -148,3 +151,14 @@ def run_answer(
         answer=reply.answer,
         sources=_cited_sources(reply, found.hits),
     )
+
+
+def run_answer(
+    question: str,
+    settings: Settings,
+    embedder: QueryEmbedder,
+    answerer: Answerer,
+    store: Store,
+) -> AnswerResult:
+    found = run_search(question, settings, embedder, store)
+    return answer_from_hits(question, found, answerer)

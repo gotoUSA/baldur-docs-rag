@@ -18,7 +18,11 @@ from baldur_docs_rag.answer import (
     run_answer,
 )
 from baldur_docs_rag.config import Settings
-from baldur_docs_rag.errors import AnswerError, AnswerQuotaError
+from baldur_docs_rag.errors import (
+    AnswerError,
+    AnswerQuotaError,
+    AnswerRejectedError,
+)
 from baldur_docs_rag.search import SearchResult
 from baldur_docs_rag.store import SearchHit
 
@@ -140,7 +144,7 @@ def test_status_errors_seen_from_the_real_api_become_answer_errors(error_class, 
     with pytest.raises(AnswerError, match=str(code)) as caught:
         answerer.answer("q", HITS)
 
-    assert not isinstance(caught.value, AnswerQuotaError)
+    assert not isinstance(caught.value, AnswerQuotaError | AnswerRejectedError)
     assert isinstance(caught.value.__cause__, error_class)
 
 
@@ -209,7 +213,7 @@ def test_citation_outside_the_evidence_is_a_failure(monkeypatch, number):
 def test_answer_without_citations_is_a_failure(monkeypatch):
     reply = ModelAnswer(answerable=True, answer="x", citations=[])
 
-    with pytest.raises(AnswerError, match="without citing"):
+    with pytest.raises(AnswerRejectedError, match="without citing"):
         run(monkeypatch, reply)
 
 

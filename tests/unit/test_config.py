@@ -46,6 +46,7 @@ def test_env_file_with_a_byte_order_mark_is_read(tmp_path):
         ("search_top_k", 0),
         ("answer_model", ""),
         ("answer_timeout_seconds", 0),
+        ("eval_answer_interval_seconds", 0),
     ],
 )
 def test_out_of_range_values_are_rejected(tmp_path, field, value):

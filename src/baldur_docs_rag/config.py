@@ -13,6 +13,7 @@ from baldur_docs_rag.errors import ConfigError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ENV_FILE = PROJECT_ROOT / ".env"
+EVAL_DIR = PROJECT_ROOT / "eval"
 
 # The free tier limit seen in AI Studio is 30,000 tokens per minute.
 # The default stays below it because tokens are estimated, not counted.
@@ -49,6 +50,11 @@ class Settings(BaseSettings):
     answer_model: str = Field(default="gemini-3.6-flash", min_length=1)
     # In seconds, unlike embedding_timeout_ms. One real call took 50.9 seconds.
     answer_timeout_seconds: float = Field(default=120, gt=0)
+
+    eval_questions_path: Path = EVAL_DIR / "questions.json"
+    eval_results_dir: Path = EVAL_DIR / "results"
+    # The free tier limit seen in AI Studio is 5 answer requests per minute.
+    eval_answer_interval_seconds: float = Field(default=13, gt=0)
 
     chunk_max_chars: int = Field(default=2000, ge=200)
     search_top_k: int = Field(default=5, ge=1, le=50)

@@ -1,5 +1,6 @@
 """Real PostgreSQL and real git, with a fake embedder so no API quota is spent."""
 
+import json
 import subprocess
 import uuid
 
@@ -8,8 +9,14 @@ import pytest
 from psycopg import sql
 
 from baldur_docs_rag.answer import ModelAnswer, run_answer
-from baldur_docs_rag.config import Settings
-from baldur_docs_rag.errors import CorpusNotReadyError, EmbeddingQuotaError, StoreError
+from baldur_docs_rag.config import EVAL_DIR, Settings
+from baldur_docs_rag.errors import (
+    AnswerQuotaError,
+    CorpusNotReadyError,
+    EmbeddingQuotaError,
+    StoreError,
+)
+from baldur_docs_rag.evaluation import Ratio, load_questions, run_evaluation
 from baldur_docs_rag.ingest import run_ingest
 from baldur_docs_rag.search import run_search
 from baldur_docs_rag.store import Store
@@ -312,3 +319,189 @@ def test_answer_is_refused_before_any_model_call_while_ingest_is_incomplete(
             run_answer("alpha", settings, FakeEmbedder(AXES), answerer, store)
 
     assert answerer.questions == []
+
+
+class ScriptedAnswerer:
+    """Replies in order. Quota errors are raised, like a stop part way through a run."""
+
+    def __init__(self, *replies):
+        self.replies = list(replies)
+        self.calls = 0
+
+    def answer(self, question, hits):
+        self.calls += 1
+        reply = self.replies.pop(0)
+        if isinstance(reply, Exception):
+            raise reply
+        return reply
+
+
+def write_questions(tmp_path):
+    path = tmp_path / "questions.json"
+    path.write_text(
+        json.dumps(
+            {
+                "authoring": "test",
+                "questions": [
+                    {
+                        "id": "a1",
+                        "group": "answerable",
+                        "question": "tell me about charlie",
+                        "expected_chunks": [
+                            {"source_path": "docs/charlie.md", "chunk_index": 0}
+                        ],
+                    },
+                    {
+                        "id": "u1",
+                        "group": "unrelated",
+                        "question": "tell me about delta",
+                        "expected_chunks": [],
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def eval_settings(repo, database_url, tmp_path):
+    return make_settings(
+        repo,
+        database_url,
+        eval_questions_path=write_questions(tmp_path),
+        eval_results_dir=tmp_path / "results",
+    )
+
+
+ANSWER_ONE = ModelAnswer(answerable=True, answer="x", citations=[1])
+REFUSE = ModelAnswer(answerable=False, answer="", citations=[])
+
+
+def test_evaluation_measures_real_retrieval_and_records_its_conditions(
+    repo, database_url, tmp_path
+):
+    settings = eval_settings(repo, database_url, tmp_path)
+    embedder = FakeEmbedder(AXES)
+
+    with Store(database_url) as store:
+        ingested = run_ingest(settings, embedder, store, sleep=no_sleep)
+        report = run_evaluation(
+            settings,
+            embedder,
+            ScriptedAnswerer(ANSWER_ONE, REFUSE),
+            store,
+            sleep=no_sleep,
+        )
+
+    assert report.summary.complete is True
+    assert report.summary.retrieval_hit == Ratio(1, 1)
+    assert report.summary.citation_match == Ratio(1, 1)
+    assert report.summary.refusal_unrelated == Ratio(1, 1)
+    assert report.run_info["source_commit"] == ingested.source_commit
+    assert report.run_info["answer_model"] == settings.answer_model
+
+
+def test_stopped_evaluation_resumes_from_the_file_after_a_new_connection(
+    repo, database_url, tmp_path
+):
+    settings = eval_settings(repo, database_url, tmp_path)
+    embedder = FakeEmbedder(AXES)
+
+    with Store(database_url) as store:
+        run_ingest(settings, embedder, store, sleep=no_sleep)
+        stopped = run_evaluation(
+            settings,
+            embedder,
+            ScriptedAnswerer(ANSWER_ONE, AnswerQuotaError("quota reached")),
+            store,
+            sleep=no_sleep,
+        )
+
+    assert "quota reached" in stopped.stopped_reason
+    assert stopped.summary.pending_answers == 1
+    assert stopped.summary.retrieval_hit == Ratio(1, 1)
+
+    # A new connection and new objects, so only the results file can carry the state.
+    resumed_embedder = FakeEmbedder(AXES)
+    resumed_answerer = ScriptedAnswerer(REFUSE)
+    resumed_embedder.embed_query = None
+    with Store(database_url) as store:
+        resumed = run_evaluation(
+            settings, resumed_embedder, resumed_answerer, store, sleep=no_sleep
+        )
+
+    assert resumed_answerer.calls == 1
+    assert resumed.summary.complete is True
+    assert resumed.run_info == stopped.run_info
+
+
+def test_evaluation_waits_between_model_calls_only(repo, database_url, tmp_path):
+    settings = eval_settings(repo, database_url, tmp_path)
+    embedder = FakeEmbedder(AXES)
+    naps = []
+
+    with Store(database_url) as store:
+        run_ingest(settings, embedder, store, sleep=no_sleep)
+        run_evaluation(
+            settings,
+            embedder,
+            ScriptedAnswerer(ANSWER_ONE, REFUSE),
+            store,
+            sleep=naps.append,
+        )
+
+    assert naps == [settings.eval_answer_interval_seconds]
+
+
+def test_invalid_citation_is_recorded_as_a_rejected_reply(repo, database_url, tmp_path):
+    settings = eval_settings(repo, database_url, tmp_path)
+    embedder = FakeEmbedder(AXES)
+    invalid = ModelAnswer(answerable=True, answer="x", citations=[99])
+
+    with Store(database_url) as store:
+        run_ingest(settings, embedder, store, sleep=no_sleep)
+        report = run_evaluation(
+            settings,
+            embedder,
+            ScriptedAnswerer(invalid, REFUSE),
+            store,
+            sleep=no_sleep,
+        )
+
+    assert report.summary.rejected_answers == 1
+    assert report.summary.citation_match == Ratio(0, 0)
+
+
+def test_evaluation_is_refused_before_any_ingest(repo, database_url, tmp_path):
+    settings = eval_settings(repo, database_url, tmp_path)
+
+    with Store(database_url) as store:
+        with pytest.raises(CorpusNotReadyError):
+            run_evaluation(
+                settings, FakeEmbedder(AXES), ScriptedAnswerer(), store, sleep=no_sleep
+            )
+
+
+def test_every_expected_chunk_in_the_question_file_exists_in_the_database():
+    # Skips visibly when the real corpus is not loaded, since nothing can be checked.
+    question_set, _ = load_questions(EVAL_DIR / "questions.json")
+    try:
+        conn = psycopg.connect(ADMIN_URL, connect_timeout=3)
+    except psycopg.OperationalError:
+        pytest.skip("PostgreSQL from docker-compose.yml is not running")
+    with conn:
+        exists = conn.execute("SELECT to_regclass('chunks')").fetchone()[0]
+        if exists is None:
+            pytest.skip("The real corpus is not loaded")
+        stored = set(
+            conn.execute("SELECT source_path, chunk_index FROM chunks").fetchall()
+        )
+
+    missing = [
+        (question.id, ref.source_path, ref.chunk_index)
+        for question in question_set.questions
+        for ref in question.expected_chunks
+        if (ref.source_path, ref.chunk_index) not in stored
+    ]
+    assert missing == []
