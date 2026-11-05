@@ -21,3 +21,5 @@
 ### Fixed
 
 - A quota stop during `search` no longer says that ingest batches were saved.
+- `ask` and `evaluate` no longer hang past the answer timeout. A rate limit now stops at once,
+  and one answer call cannot take longer than `answer_timeout_seconds`.
