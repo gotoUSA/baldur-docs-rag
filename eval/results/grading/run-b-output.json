@@ -1,0 +1,437 @@
+{
+  "grader_model": "claude-opus-5-5",
+  "items": [
+    {
+      "id": "a01",
+      "verdict": "correct",
+      "reason": "한도가 늘지 않는다는 답과, 백오프가 N번에서 한 번으로 줄고 나머지 워커가 대기 구간에 도달하지 않는다는 설명이 모두 문단 [2]에 근거합니다.",
+      "claims": [
+        {
+          "claim": "Baldur를 써도 API 호출 한도 자체가 늘거나 처리량이 증가하지 않는다.",
+          "evidence": "It also does not make your quota bigger. Nothing here buys you throughput.",
+          "evidence_source": "[2]",
+          "meaning_ko": "할당량을 늘려 주지 않으며, 처리량을 더 얻게 해 주는 것도 없다."
+        },
+        {
+          "claim": "이미 도달한 한도에 대해 워커별로 백오프를 겪는 대신 한 번만 대기하게 줄여 준다.",
+          "evidence": "What\nit buys is that a limit you already hit costs you one backoff instead of N",
+          "evidence_source": "[2]",
+          "meaning_ko": "얻는 것은 이미 도달한 한도의 비용이 백오프 N번이 아니라 한 번으로 줄어든다는 점이다."
+        },
+        {
+          "claim": "첫 워커가 대기하는 동안 나머지 워커가 같은 한도에 부딪히지 않게 해 준다.",
+          "evidence": "that the rest of the fleet stops arriving during the window the first worker is\nwaiting out.",
+          "evidence_source": "[2]",
+          "meaning_ko": "첫 워커가 기다리는 구간 동안 나머지 fleet이 요청을 보내지 않게 된다."
+        }
+      ]
+    },
+    {
+      "id": "a02",
+      "verdict": "correct",
+      "reason": "모든 파드가 DB 하나를 공유할 때 해당 변수를 ready로 두라는 답, 기본값, 그 효과가 모두 문단 [3], [4]에 근거합니다.",
+      "claims": [
+        {
+          "claim": "DB 지연 시 파드 제외 여부는 BALDUR_HEALTH_CHECK_READINESS_TIMEOUT_FAIL_DIRECTION 환경 변수로 정한다.",
+          "evidence": "Whether a stall depools the pod is yours to choose, via\n  `BALDUR_HEALTH_CHECK_READINESS_TIMEOUT_FAIL_DIRECTION`.",
+          "evidence_source": "[3]",
+          "meaning_ko": "DB 지연 때 파드를 로테이션에서 뺄지는 이 변수로 사용자가 선택한다."
+        },
+        {
+          "claim": "모든 파드가 하나의 DB를 공유하면 값을 ready로 설정해야 한다.",
+          "evidence": "Choose `ready` when every\npod shares one database",
+          "evidence_source": "[4]",
+          "meaning_ko": "모든 파드가 DB 하나를 공유하면 ready를 선택한다."
+        },
+        {
+          "claim": "기본값은 not_ready이다.",
+          "evidence": "`not_ready` (the default) depools the pod, fast and honestly",
+          "evidence_source": "[4]",
+          "meaning_ko": "기본값인 not_ready는 파드를 빠르고 투명하게 로테이션에서 뺀다."
+        },
+        {
+          "claim": "ready로 바꾸면 DB 지연 시 서비스 전체 파드가 한꺼번에 로테이션에서 제외되는 것을 막을 수 있다.",
+          "evidence": "there, depooling on a database stall takes the whole\nservice out of rotation at once, and staying in rotation degraded is the better\nfailure mode.",
+          "evidence_source": "[4]",
+          "meaning_ko": "그런 환경에서는 DB 지연으로 파드를 빼면 서비스 전체가 한꺼번에 로테이션에서 빠지므로, 성능이 저하된 채 로테이션에 남는 편이 더 나은 장애 방식이다."
+        }
+      ]
+    },
+    {
+      "id": "a03",
+      "verdict": "correct",
+      "reason": "드레이닝 중 readiness 엔드포인트가 status가 draining인 503을 반환하고 파드가 NotReady가 되어 새 연결이 멈춘다는 내용이 모두 문단 [1]에 근거합니다.",
+      "claims": [
+        {
+          "claim": "그레이스풀 셧다운(DRAINING 단계) 동안 readiness 엔드포인트는 status가 draining인 JSON과 함께 HTTP 503을 반환한다.",
+          "evidence": "`/api/baldur/health/l3/` and `/api/baldur/health/bridge/` (the DB-independent readiness endpoints) flip to 503 during DRAINING with a `status: draining` payload:",
+          "evidence_source": "[1]",
+          "meaning_ko": "DB에 의존하지 않는 readiness 엔드포인트들은 DRAINING 동안 status가 draining인 페이로드와 함께 503으로 바뀐다."
+        },
+        {
+          "claim": "이로 인해 Kubernetes readinessProbe가 파드를 NotReady로 표시하고 새 연결이 들어오지 않는다.",
+          "evidence": "This makes k8s `readinessProbe` flip the pod's endpoint slice to NotReady, which deregisters it from the Service's load balancer — new connections stop arriving immediately",
+          "evidence_source": "[1]",
+          "meaning_ko": "이에 따라 k8s readinessProbe가 파드의 엔드포인트 슬라이스를 NotReady로 바꿔 서비스 로드 밸런서에서 해제하므로 새 연결이 즉시 멈춘다."
+        }
+      ]
+    },
+    {
+      "id": "a04",
+      "verdict": "correct",
+      "reason": "문단 [1]의 프레임워크 선택 목록과 답변의 네 항목(Django, FastAPI, Flask, Celery)이 일치하고, 각 항목이 quickstart 가이드임도 문단에 나옵니다.",
+      "claims": [
+        {
+          "claim": "시작 가이드가 있는 프레임워크는 Django, FastAPI, Flask, Celery이다.",
+          "evidence": "- [Django](django.md)\n- [FastAPI](fastapi.md)\n- [Flask](flask.md)\n- [Celery](celery.md) — background tasks (workers + scheduled jobs)",
+          "evidence_source": "[1]",
+          "meaning_ko": "프레임워크 선택 목록에 Django, FastAPI, Flask, Celery(백그라운드 작업용)가 있다."
+        }
+      ]
+    },
+    {
+      "id": "a05",
+      "verdict": "correct",
+      "reason": "PRO의 월 가격 $149와 연 결제 가격 $1,490이 문단 [1], [2]에 그대로 나옵니다.",
+      "claims": [
+        {
+          "claim": "유료 버전(Baldur PRO)의 가격은 월 $149이고, 연간 결제 시 연 $1,490이다.",
+          "evidence": "**Baldur PRO** starts at **$149/month** (or $1,490/year).",
+          "evidence_source": "[2]",
+          "meaning_ko": "Baldur PRO는 월 149달러(또는 연 1,490달러)부터 시작한다."
+        }
+      ]
+    },
+    {
+      "id": "a06",
+      "verdict": "correct",
+      "reason": "해당 지표의 기본 버킷이 10초에서 끝나 수십 초에서 몇 분짜리 지연 패스가 +Inf로 뭉쳐 사라진다는 이유가 문단 [1]과 일치합니다.",
+      "claims": [
+        {
+          "claim": "baldur_daemon_worker_iteration_duration_seconds 지표를 대신 쓰면 안 된다.",
+          "evidence": "**Do not substitute `baldur_daemon_worker_iteration_duration_seconds`.**",
+          "evidence_source": "[1]",
+          "meaning_ko": "이 지표로 대체하지 말라."
+        },
+        {
+          "claim": "이 지표의 기본 히스토그램 버킷은 유한 한계 10초까지만 있다.",
+          "evidence": "its default histogram buckets top out at a 10 s finite bound",
+          "evidence_source": "[1]",
+          "meaning_ko": "기본 히스토그램 버킷의 유한 상한이 10초에서 끝난다."
+        },
+        {
+          "claim": "수십 초에서 몇 분 동안 지연된 패스가 모두 +Inf로 축소되어 지표에서 사라진다.",
+          "evidence": "so every stalled pass this rule cares about — tens of seconds to minutes — collapses into `+Inf` and disappears.",
+          "evidence_source": "[1]",
+          "meaning_ko": "그래서 이 규칙이 관심을 두는 수십 초에서 몇 분짜리 지연 패스는 전부 +Inf로 뭉쳐 사라진다."
+        }
+      ]
+    },
+    {
+      "id": "a07",
+      "verdict": "wrong",
+      "reason": "약 5초 이내라는 핵심 답과 캐시 창 관련 설명은 문단에 근거가 있지만, 답변이 덧붙인 'PRO Release Notes 1.3.0'이라는 버전 정보는 인용 문단 어디에도 없습니다. 문단 [1]은 'this release'라고만 하고 코어 버전 1.10.0만 밝히므로 근거 없는 내용을 덧붙인 경우로 판정합니다.",
+      "claims": [
+        {
+          "claim": "킬 스위치 변경은 저장소를 공유하는 다른 모든 프로세스에 약 5초 이내에 전달된다.",
+          "evidence": "A flip reaches the process that made it at once and every other process\n  sharing the store within about five seconds, with no restart.",
+          "evidence_source": "[2]",
+          "meaning_ko": "변경은 그 변경을 한 프로세스에는 즉시, 저장소를 공유하는 다른 모든 프로세스에는 재시작 없이 약 5초 이내에 전달된다."
+        },
+        {
+          "claim": "이 동작은 PRO Release Notes 1.3.0에 따른 것이다.",
+          "evidence": null,
+          "evidence_source": null,
+          "meaning_ko": null
+        },
+        {
+          "claim": "이 동작을 위해 무료 코어 1.10.0과 함께 써야 한다.",
+          "evidence": "pair this release with free core 1.10.0, which publishes the flip and invalidates the gate's cache.",
+          "evidence_source": "[1]",
+          "meaning_ko": "이 릴리스를 무료 코어 1.10.0과 함께 써야 하며, 코어가 변경 이벤트를 발행하고 게이트의 캐시를 무효화한다."
+        },
+        {
+          "claim": "지연은 캐시 창 하나로 제한되거나, 이벤트 버스가 변경 이벤트를 전달하는 곳에서는 즉시 반영된다.",
+          "evidence": "so the delay is bounded by one cache window — or immediate wherever the event bus delivers the flip.",
+          "evidence_source": "[1]",
+          "meaning_ko": "지연은 캐시 창 하나로 제한되며, 이벤트 버스가 변경을 전달하는 곳에서는 즉시 반영된다."
+        }
+      ]
+    },
+    {
+      "id": "a08",
+      "verdict": "correct",
+      "reason": "기본 타임아웃이 없어(None) 영원히 대기한다는 답이 문단 [1], [5]의 표와 일치합니다.",
+      "claims": [
+        {
+          "claim": "requests 라이브러리는 기본 타임아웃이 없어(None) 설정하지 않으면 영원히 대기한다.",
+          "evidence": "| `requests.get()` / `Session.send` | **None** (will block forever) | `requests.get(url, timeout=(5, 30))` — (connect, read) |",
+          "evidence_source": "[1]",
+          "meaning_ko": "requests.get()과 Session.send의 기본 타임아웃은 None이며 영원히 대기한다."
+        }
+      ]
+    },
+    {
+      "id": "a09",
+      "verdict": "correct",
+      "reason": "error_budget과 drift_threshold 두 도메인이 콘솔 편집기에 나오지 않고 REST로 관리된다는 답이 문단 [1]과 일치합니다.",
+      "claims": [
+        {
+          "claim": "웹 콘솔에서 편집할 수 없고 REST로 관리해야 하는 설정 도메인은 error_budget과 drift_threshold 두 가지이다.",
+          "evidence": "- **Two domains are expert/REST-managed only.** `error_budget` and `drift_threshold`\n  exist as config domains but are hidden from the console editor projection; manage them\n  via their REST surfaces (`/config/error-budget` and the drift-threshold config\n  endpoint) if needed.",
+          "evidence_source": "[1]",
+          "meaning_ko": "두 도메인은 전문가용으로 REST로만 관리한다. error_budget과 drift_threshold는 설정 도메인으로 존재하지만 콘솔 편집기에는 표시되지 않으므로, 필요하면 각각의 REST 경로로 관리한다."
+        }
+      ]
+    },
+    {
+      "id": "a10",
+      "verdict": "correct",
+      "reason": "쿨다운이 같은 알림의 반복을 억제하고, 키 기준으로 중복을 제거하며, 전체 인스턴스에 걸쳐 적용된다는 내용이 모두 문단 [2]에 근거합니다. 속도 제한 설명을 뺐지만 같은 알림 반복을 막는 핵심 답은 들어 있습니다.",
+      "claims": [
+        {
+          "claim": "동일한 알림이 반복되면 쿨다운이 작동해 채널 도배를 막는다.",
+          "evidence": "a **cooldown** suppresses repeats of the *same* alert for a configurable window.",
+          "evidence_source": "[3]",
+          "meaning_ko": "쿨다운은 설정 가능한 시간 창 동안 같은 알림의 반복을 억제한다."
+        },
+        {
+          "claim": "알림은 명시적 중복 제거 키 또는 소스와 카테고리 쌍을 기준으로 중복 제거된다.",
+          "evidence": "notifications are de-duplicated by a key (an explicit dedup key, or the source-and-category pair)",
+          "evidence_source": "[2]",
+          "meaning_ko": "알림은 키(명시적 중복 제거 키, 또는 소스와 카테고리 쌍)로 중복 제거된다."
+        },
+        {
+          "claim": "쿨다운 창 동안 첫 번째 알림만 발송되고 이후 수십~수백 개의 동일한 알림은 보류된다.",
+          "evidence": "so the second, third, and hundredth copy of one ongoing condition are held back while the first still stands.",
+          "evidence_source": "[2]",
+          "meaning_ko": "그래서 진행 중인 한 상황의 두 번째, 세 번째, 백 번째 사본은 첫 알림이 유효한 동안 보류된다."
+        },
+        {
+          "claim": "이 중복 제거는 단일 프로세스뿐 아니라 전체 인스턴스(파드 fleet)에 걸쳐 적용된다.",
+          "evidence": "This deduplication spans every running instance — a fleet of pods reacting to the same condition raises one alert, not one per pod",
+          "evidence_source": "[2]",
+          "meaning_ko": "이 중복 제거는 실행 중인 모든 인스턴스에 걸쳐 적용되어, 같은 상황에 반응하는 파드 fleet은 파드마다가 아니라 알림 하나만 낸다."
+        }
+      ]
+    },
+    {
+      "id": "a11",
+      "verdict": "correct",
+      "reason": "인메모리 DB라 프로세스마다 빈 DB로 시작해 migrate로 안내가 사라지지 않고, DATABASES를 파일이나 서버로 바꾼 뒤 migrate하면 사라진다는 내용이 모두 문단 [1]에 근거합니다.",
+      "claims": [
+        {
+          "claim": "예제 설정 파일이 DB를 :memory:로 두어 시작할 때마다 빈 DB로 시작한다.",
+          "evidence": "this settings file\n    keeps the database at `:memory:`, so every start begins with an empty one",
+          "evidence_source": "[1]",
+          "meaning_ko": "이 설정 파일은 DB를 :memory:로 유지하므로 시작할 때마다 빈 DB로 시작한다."
+        },
+        {
+          "claim": "manage.py migrate를 실행해도 다음 프로세스에서 새 인메모리 DB가 생기므로 안내가 사라지지 않는다.",
+          "evidence": "`manage.py migrate` will not silence it, because\n    the next process gets a fresh in-memory database again.",
+          "evidence_source": "[1]",
+          "meaning_ko": "다음 프로세스가 다시 새 인메모리 DB를 받으므로 manage.py migrate로는 안내가 사라지지 않는다."
+        },
+        {
+          "claim": "안내를 없애려면 DATABASES를 파일이나 실제 서버로 바꾼 뒤 마이그레이션해야 한다.",
+          "evidence": "Point `DATABASES`\n    at a file or a real server and the notice goes away once you migrate.",
+          "evidence_source": "[1]",
+          "meaning_ko": "DATABASES를 파일이나 실제 서버로 지정하면 migrate 후 안내가 사라진다."
+        }
+      ]
+    },
+    {
+      "id": "a12",
+      "verdict": "correct",
+      "reason": "첫 인자는 안정적이고 의존 대상마다 하나여야 하며, 회로 차단기 키, 재시도 도메인, 지표 레이블이 이에 달려 있다는 내용이 모두 문단 [1]에 근거합니다.",
+      "claims": [
+        {
+          "claim": "첫 인자 name은 안정적으로, 의존 대상마다 하나씩 유지해야 한다(예: charge-customer, inventory-lookup).",
+          "evidence": "Keep it **stable and\none-per-downstream** (`\"charge-customer\"`, `\"inventory-lookup\"`)",
+          "evidence_source": "[1]",
+          "meaning_ko": "이름은 안정적으로, 하위 의존 대상마다 하나씩 유지한다."
+        },
+        {
+          "claim": "name은 Baldur 전반에서 호출의 식별자이며, 회로 차단기 키, 재시도 도메인, 지표 그룹 레이블로 쓰인다.",
+          "evidence": "The first argument, the `name`, is the call's identity across Baldur. It is the circuit\nbreaker's key, the retry domain, and the label your metrics are grouped under.",
+          "evidence_source": "[1]",
+          "meaning_ko": "첫 인자 name은 Baldur 전반에서 호출의 식별자이며, 회로 차단기의 키, 재시도 도메인, 지표를 묶는 레이블이다."
+        },
+        {
+          "claim": "이렇게 하면 회로 차단기 상태와 대시보드가 해당 의존 대상과 일치한다.",
+          "evidence": "so the breaker state and the\ndashboards line up with the dependency they describe.",
+          "evidence_source": "[1]",
+          "meaning_ko": "그래야 차단기 상태와 대시보드가 그것들이 나타내는 의존 대상과 맞아떨어진다."
+        }
+      ]
+    },
+    {
+      "id": "a13",
+      "verdict": "wrong",
+      "reason": "Redis에서 모든 수가 0으로 나온다는 결론은 맞지만, 원인 설명에서 통계 소스가 큐가 SQL에 저장된 경우에만 자동 등록된다고 했습니다. 문단 [3]의 등록 조건은 BALDUR_SQL_DSN 설정뿐이고, SQL 저장 조건은 숫자가 실제 실패 건을 반영하는 조건이므로, 두 조건을 합쳐 문단에 없는 등록 조건을 만든 경우로 판정합니다.",
+      "claims": [
+        {
+          "claim": "대시보드 요약은 큐를 직접 읽지 않고 통계 소스를 통해 데드 레터 항목 수를 집계한다.",
+          "evidence": "Every section counts dead-letter entries, read through a statistics source rather than from the\nqueue itself.",
+          "evidence_source": "[3]",
+          "meaning_ko": "모든 섹션은 큐 자체가 아니라 통계 소스를 통해 읽어 데드 레터 항목을 센다."
+        },
+        {
+          "claim": "통계 소스는 BALDUR_SQL_DSN이 설정된 경우에만 자동 등록된다.",
+          "evidence": "Baldur registers that source by itself only when `BALDUR_SQL_DSN` is set",
+          "evidence_source": "[3]",
+          "meaning_ko": "Baldur는 BALDUR_SQL_DSN이 설정된 경우에만 그 소스를 스스로 등록한다."
+        },
+        {
+          "claim": "통계 소스의 자동 등록에는 데드 레터 큐가 SQL에 저장되어 있어야 한다는 조건도 필요하다(BALDUR_DLQ_BACKEND=sql 등).",
+          "evidence": null,
+          "evidence_source": null,
+          "meaning_ko": null
+        },
+        {
+          "claim": "Redis나 메모리 저장소를 쓰면 모든 카운트가 0으로 표시되고 상태는 healthy로 읽힌다.",
+          "evidence": "On the memory or Redis store every\ncount reads zero and the verdict reads `healthy`",
+          "evidence_source": "[3]",
+          "meaning_ko": "메모리나 Redis 저장소에서는 모든 수가 0으로 읽히고 판정은 healthy로 읽힌다."
+        },
+        {
+          "claim": "큐 자체의 읽기 엔드포인트는 큐를 직접 읽으므로 실패 항목을 확인할 수 있다.",
+          "evidence": "The dead\nletter queue's own read endpoints still list those entries, because they read the queue directly.",
+          "evidence_source": "[3]",
+          "meaning_ko": "데드 레터 큐 자체의 읽기 엔드포인트는 큐를 직접 읽으므로 그 항목들을 여전히 보여 준다."
+        }
+      ]
+    },
+    {
+      "id": "a14",
+      "verdict": "correct",
+      "reason": "새 마이너가 나오는 날 이전 마이너가 지원 종료되고 패치는 현재 마이너만 받는다는 내용이 문단 [1]과 일치합니다.",
+      "claims": [
+        {
+          "claim": "이전 마이너 버전은 새 마이너 버전이 나오는 날 지원 종료된다.",
+          "evidence": "the previous minor reaches end of life the day a new minor\nships.",
+          "evidence_source": "[1]",
+          "meaning_ko": "이전 마이너는 새 마이너가 출시되는 날 지원이 종료된다."
+        },
+        {
+          "claim": "새 마이너 출시 후 이전 마이너는 패치를 받지 않는다.",
+          "evidence": "the current minor release line\nreceives patches",
+          "evidence_source": "[1]",
+          "meaning_ko": "패치는 현재 마이너 릴리스 라인이 받는다."
+        }
+      ]
+    },
+    {
+      "id": "a15",
+      "verdict": "correct",
+      "reason": "매핑 추가가 필요 없고, 회로가 닫힐 때 자동으로 스위프되며, 오히려 추가하면 안 된다는 내용이 모두 문단 [1]에 근거합니다. 핸들러 등록 같은 세부 조건을 뺐지만 질문의 핵심에는 답했습니다.",
+      "claims": [
+        {
+          "claim": "실패 유형 매핑에 추가할 필요가 없다.",
+          "evidence": "### Open-circuit entries need no map entry",
+          "evidence_source": "[1]",
+          "meaning_ko": "회로 열림으로 쌓인 항목에는 매핑 항목이 필요 없다."
+        },
+        {
+          "claim": "회로가 열려 캡처된 작업은 해당 회로가 닫힐 때 자동으로 스위프된다.",
+          "evidence": "Entries parked because the circuit was OPEN (`CIRCUIT_BREAKER_OPEN`) are swept automatically when that same circuit closes",
+          "evidence_source": "[1]",
+          "meaning_ko": "회로가 OPEN이라 보관된 항목은 그 회로가 닫힐 때 자동으로 스위프된다."
+        },
+        {
+          "claim": "service_failure_type_map에 CIRCUIT_BREAKER_OPEN을 추가해서는 안 된다.",
+          "evidence": "**Do not add `CIRCUIT_BREAKER_OPEN` to `service_failure_type_map`.**",
+          "evidence_source": "[1]",
+          "meaning_ko": "service_failure_type_map에 CIRCUIT_BREAKER_OPEN을 추가하지 말라."
+        }
+      ]
+    },
+    {
+      "id": "a16",
+      "verdict": "correct",
+      "reason": "부팅 후 redis-py의 connection_pool.connection_kwargs에 ssl=True가 있는지 확인한다는 답이 문단 [1]과 일치합니다.",
+      "claims": [
+        {
+          "claim": "부팅 후 TLS 적용 여부를 확인할 수 있다.",
+          "evidence": "After boot, verify TLS is actually in effect",
+          "evidence_source": "[1]",
+          "meaning_ko": "부팅 후 TLS가 실제로 적용되었는지 확인한다."
+        },
+        {
+          "claim": "redis-py에서는 BALDUR_TLS_ENABLED=true가 적용되면 connection_pool.connection_kwargs에 ssl=True가 들어 있다.",
+          "evidence": "for Redis with `redis-py`, the `connection_pool.connection_kwargs` dict will carry `ssl=True` when `BALDUR_TLS_ENABLED=true` is honored.",
+          "evidence_source": "[1]",
+          "meaning_ko": "redis-py를 쓰는 Redis의 경우 BALDUR_TLS_ENABLED=true가 적용되면 connection_pool.connection_kwargs 딕셔너리에 ssl=True가 들어 있다."
+        }
+      ]
+    },
+    {
+      "id": "a17",
+      "verdict": "correct",
+      "reason": "직접 구현할 때 필요한 세 가지와 Baldur를 쓸 때 작성할 리플레이 핸들러 및 등록 코드가 모두 문단 [1], [2]에 근거하며, 질문이 묻는 '직접 작성할 것'에 답합니다.",
+      "claims": [
+        {
+          "claim": "직접 구현할 경우 태스크 이름과 args, kwargs를 테이블에 저장하는 on_failure 훅이 필요하다.",
+          "evidence": "An `on_failure` hook that writes the task name,\n  args and kwargs to a table",
+          "evidence_source": "[1]",
+          "meaning_ko": "태스크 이름, args, kwargs를 테이블에 기록하는 on_failure 훅."
+        },
+        {
+          "claim": "직접 구현할 경우 저장된 항목을 다시 큐에 넣는 관리 명령어가 필요하다.",
+          "evidence": "a management command that re-enqueues them",
+          "evidence_source": "[1]",
+          "meaning_ko": "그것들을 다시 큐에 넣는 관리 명령어."
+        },
+        {
+          "claim": "직접 구현할 경우 외부 서비스 복구를 판단해 같은 장애를 다시 겪지 않게 하는 로직이 필요하다.",
+          "evidence": "some way of deciding that the provider is back, so the replay does not run\n  into the same outage.",
+          "evidence_source": "[1]",
+          "meaning_ko": "재실행이 같은 장애에 부딪히지 않도록 제공자가 복구되었는지 판단하는 방법."
+        },
+        {
+          "claim": "Baldur를 쓸 경우 도메인별 리플레이 핸들러를 작성해 캡처된 요청으로 태스크를 다시 큐에 넣는다.",
+          "evidence": "A replay\nhandler for a Celery domain re-enqueues the task from the captured request:",
+          "evidence_source": "[2]",
+          "meaning_ko": "Celery 도메인용 리플레이 핸들러는 캡처된 요청으로 태스크를 다시 큐에 넣는다."
+        },
+        {
+          "claim": "핸들러는 ReplayHandler를 상속해 domain, can_replay, replay를 갖추고, replay는 args와 kwargs로 apply_async를 호출한다.",
+          "evidence": "class BillingReplayHandler(ReplayHandler):\n    @property\n    def domain(self) -> str:\n        return \"billing\"\n\n    def can_replay(self, failed_op) -> tuple[bool, str]:\n        return True, \"\"\n\n    def replay(self, failed_op) -> ReplayResult:\n        request = failed_op.request_data or {}\n        send_invoice.apply_async(\n            args=request.get(\"args\", []),\n            kwargs=request.get(\"kwargs\", {}),\n        )",
+          "evidence_source": "[2]",
+          "meaning_ko": "ReplayHandler를 상속한 클래스가 domain과 can_replay를 정의하고, replay에서 캡처된 요청의 args와 kwargs로 send_invoice.apply_async를 호출하는 예시 코드이다."
+        },
+        {
+          "claim": "핸들러를 register_replay_handler()로 워커 프로세스에 등록한다.",
+          "evidence": "Register it in a module the worker imports — registration is per process, and\nthe worker is where replay runs.",
+          "evidence_source": "[2]",
+          "meaning_ko": "워커가 임포트하는 모듈에서 등록한다. 등록은 프로세스 단위이고 재실행은 워커에서 일어난다."
+        },
+        {
+          "claim": "핸들러를 콘솔 프로세스에도 등록한다.",
+          "evidence": "It runs your handler in the process that serves the console, so register the handler there\n  too",
+          "evidence_source": "[2]",
+          "meaning_ko": "콘솔을 제공하는 프로세스에서 핸들러가 실행되므로 그곳에도 등록한다."
+        }
+      ]
+    },
+    {
+      "id": "a18",
+      "verdict": "correct",
+      "reason": "Baldur는 이 큐에서 항목을 꺼내지 않고, 넣은 코드가 꺼내서 처리해야 한다는 답이 문단 [1]과 일치합니다.",
+      "claims": [
+        {
+          "claim": "Baldur의 어떤 부분도 PRO 인메모리 리플레이 큐에서 항목을 꺼내지 않는다.",
+          "evidence": "Nothing in Baldur dequeues\nfrom it",
+          "evidence_source": "[1]",
+          "meaning_ko": "Baldur의 어떤 부분도 이 큐에서 항목을 꺼내지 않는다."
+        },
+        {
+          "claim": "항목을 넣는 코드가 직접 꺼내서 처리해야 한다.",
+          "evidence": "code that enqueues also dequeues and processes the entries.",
+          "evidence_source": "[1]",
+          "meaning_ko": "큐에 넣는 코드가 항목을 꺼내 처리하는 일까지 맡는다."
+        }
+      ]
+    }
+  ]
+}
