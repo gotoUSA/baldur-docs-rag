@@ -1,0 +1,467 @@
+{
+  "authoring": "Written without the documents by ChatGPT web chat (GPT 5.6 Luna); groups and expected chunks agreed by two blind Claude sessions (claude-opus-5-5), intersection of chunks; rules approved by the user before labeling.",
+  "labeling": "C:/tmp/baldur-questions label-a and label-b, 2026-11-07. 0 questions dropped for disagreement.",
+  "questions": [
+    {
+      "id": "q01",
+      "group": "answerable",
+      "question": "Baldur는 정확히 어떤 상황에서 쓰는 라이브러리인가요?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 0
+        },
+        {
+          "source_path": "docs/what-is-baldur.md",
+          "chunk_index": 0
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "group": "answerable",
+      "question": "기존 Python 프로젝트에 Baldur를 붙이려면 설치부터 어떻게 시작하면 되나요?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 4
+        },
+        {
+          "source_path": "docs/getting-started/index.md",
+          "chunk_index": 0
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "group": "answerable",
+      "question": "FastAPI로 만든 서비스에도 Baldur를 적용할 수 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/faq.md",
+          "chunk_index": 7
+        },
+        {
+          "source_path": "docs/getting-started/fastapi.md",
+          "chunk_index": 0
+        },
+        {
+          "source_path": "docs/getting-started/fastapi.md",
+          "chunk_index": 2
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "group": "answerable",
+      "question": "외부 API가 응답하지 않을 때 Baldur는 어떤 식으로 대응하나요?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 1
+        },
+        {
+          "source_path": "docs/runbooks/protect-hang-troubleshooting.md",
+          "chunk_index": 0
+        },
+        {
+          "source_path": "docs/runbooks/protect-hang-troubleshooting.md",
+          "chunk_index": 1
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "group": "answerable",
+      "question": "재시도 횟수나 간격은 개발자가 직접 설정할 수 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 8
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "group": "answerable",
+      "question": "비동기 Python 코드에서도 사용할 수 있는지 궁금합니다.",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 7
+        },
+        {
+          "source_path": "docs/concepts/foundations/composition.md",
+          "chunk_index": 10
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 3
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "group": "answerable",
+      "question": "API 호출이 계속 실패하면 무한 재시도가 발생하지 않도록 막을 수 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 8
+        },
+        {
+          "source_path": "docs/faq.md",
+          "chunk_index": 2
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "group": "answerable",
+      "question": "기존 HTTP 클라이언트 코드를 많이 수정하지 않고 도입할 수 있을까요?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/what-is-baldur.md",
+          "chunk_index": 0
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "group": "answerable",
+      "question": "실패한 요청을 나중에 다시 처리하는 기능도 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/dlq-replay.md",
+          "chunk_index": 1
+        },
+        {
+          "source_path": "docs/concepts/foundations/dlq-replay.md",
+          "chunk_index": 6
+        },
+        {
+          "source_path": "docs/what-is-baldur.md",
+          "chunk_index": 1
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "group": "answerable",
+      "question": "운영 환경에 적용하기 전에 실제 복구 동작 없이 테스트해 볼 방법이 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/oss/system-control.md",
+          "chunk_index": 1
+        },
+        {
+          "source_path": "docs/concepts/oss/system-control.md",
+          "chunk_index": 2
+        },
+        {
+          "source_path": "docs/concepts/oss/system-control.md",
+          "chunk_index": 6
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "group": "answerable",
+      "question": "Baldur를 사용하면 API 장애나 재시도 상황을 로그로 확인할 수 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/getting-started/celery.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/getting-started/fastapi.md",
+          "chunk_index": 5
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "group": "answerable",
+      "question": "여러 서버 인스턴스에서 동시에 실행해도 문제가 없나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/storage-backends.md",
+          "chunk_index": 2
+        },
+        {
+          "source_path": "docs/getting-started/fastapi.md",
+          "chunk_index": 7
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "group": "answerable",
+      "question": "장애 대응 정책을 서비스별로 다르게 설정할 수 있나요?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/composition.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/concepts/foundations/composition.md",
+          "chunk_index": 6
+        },
+        {
+          "source_path": "docs/concepts/foundations/composition.md",
+          "chunk_index": 11
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "group": "unrelated",
+      "question": "Python에서 리스트 안의 중복 항목을 순서 유지하면서 제거하려면 어떻게 해야 하나요?",
+      "expected_chunks": []
+    },
+    {
+      "id": "q15",
+      "group": "unrelated",
+      "question": "Docker 컨테이너의 메모리 사용량을 확인하는 명령어가 뭐였죠?",
+      "expected_chunks": []
+    },
+    {
+      "id": "q16",
+      "group": "answerable",
+      "question": "What's the main difference between Baldur and a regular retry decorator?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/comparison/tenacity.md",
+          "chunk_index": 2
+        },
+        {
+          "source_path": "docs/faq.md",
+          "chunk_index": 2
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "group": "answerable",
+      "question": "Does Baldur support both synchronous and asynchronous API calls?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 7
+        },
+        {
+          "source_path": "docs/concepts/oss/circuit-breaker.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 3
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "group": "answerable",
+      "question": "How do I configure Baldur to handle HTTP 429 responses?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/oss/circuit-breaker.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/concepts/oss/circuit-breaker.md",
+          "chunk_index": 7
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 4
+        }
+      ]
+    },
+    {
+      "id": "q19",
+      "group": "answerable",
+      "question": "Can I use Baldur with the requests library?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/oss/circuit-breaker.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/llm-rate-limits.md",
+          "chunk_index": 12
+        },
+        {
+          "source_path": "docs/runbooks/dlq-two-layer-activation.md",
+          "chunk_index": 4
+        }
+      ]
+    },
+    {
+      "id": "q20",
+      "group": "answerable",
+      "question": "What happens when an external API keeps failing beyond the configured retry limit?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/composition.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 6
+        },
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 7
+        }
+      ]
+    },
+    {
+      "id": "q21",
+      "group": "answerable",
+      "question": "Is there a way to inspect or replay requests that failed previously?",
+      "expected_chunks": [
+        {
+          "source_path": "README.md",
+          "chunk_index": 1
+        },
+        {
+          "source_path": "docs/concepts/foundations/dlq-replay.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/concepts/foundations/dlq-replay.md",
+          "chunk_index": 6
+        }
+      ]
+    },
+    {
+      "id": "q22",
+      "group": "answerable",
+      "question": "How much overhead does Baldur add to normal successful API requests?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/resource-budget.md",
+          "chunk_index": 2
+        },
+        {
+          "source_path": "docs/faq.md",
+          "chunk_index": 5
+        }
+      ]
+    },
+    {
+      "id": "q23",
+      "group": "answerable",
+      "question": "Can Baldur distinguish between transient network errors and application-level errors?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/oss/retry.md",
+          "chunk_index": 4
+        },
+        {
+          "source_path": "docs/llm-rate-limits.md",
+          "chunk_index": 5
+        }
+      ]
+    },
+    {
+      "id": "q24",
+      "group": "answerable",
+      "question": "Does Baldur require Redis or another external service to work?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/faq.md",
+          "chunk_index": 6
+        }
+      ]
+    },
+    {
+      "id": "q25",
+      "group": "answerable",
+      "question": "Can I disable automatic recovery for specific API endpoints?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/composition.md",
+          "chunk_index": 5
+        },
+        {
+          "source_path": "docs/concepts/foundations/dlq-replay.md",
+          "chunk_index": 20
+        }
+      ]
+    },
+    {
+      "id": "q26",
+      "group": "answerable",
+      "question": "How can I monitor whether Baldur is actually recovering failed API calls in production?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/dlq-replay.md",
+          "chunk_index": 28
+        },
+        {
+          "source_path": "docs/concepts/foundations/web-console.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/concepts/oss/metrics.md",
+          "chunk_index": 2
+        },
+        {
+          "source_path": "docs/concepts/oss/metrics.md",
+          "chunk_index": 3
+        }
+      ]
+    },
+    {
+      "id": "q27",
+      "group": "related_unanswerable",
+      "question": "What should I add to my test suite to verify that Baldur handles API failures correctly?",
+      "expected_chunks": []
+    },
+    {
+      "id": "q28",
+      "group": "answerable",
+      "question": "Can Baldur be used in a distributed system where multiple services call the same external API?",
+      "expected_chunks": [
+        {
+          "source_path": "docs/concepts/foundations/rate-limiting.md",
+          "chunk_index": 3
+        },
+        {
+          "source_path": "docs/concepts/oss/circuit-breaker.md",
+          "chunk_index": 15
+        }
+      ]
+    },
+    {
+      "id": "q29",
+      "group": "unrelated",
+      "question": "What's the cleanest way to merge two Python dictionaries?",
+      "expected_chunks": []
+    },
+    {
+      "id": "q30",
+      "group": "unrelated",
+      "question": "Why does my Git branch show as both ahead and behind the remote?",
+      "expected_chunks": []
+    }
+  ]
+}
