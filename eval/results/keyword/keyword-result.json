@@ -1,0 +1,307 @@
+{
+ "set1": [
+  {
+   "id": "a01",
+   "vector": 2,
+   "keyword": 18,
+   "fused": 3,
+   "keyword_results": 50
+  },
+  {
+   "id": "a02",
+   "vector": 1,
+   "keyword": null,
+   "fused": 7,
+   "keyword_results": 24
+  },
+  {
+   "id": "a03",
+   "vector": 1,
+   "keyword": 3,
+   "fused": 2,
+   "keyword_results": 50
+  },
+  {
+   "id": "a04",
+   "vector": 1,
+   "keyword": 6,
+   "fused": 1,
+   "keyword_results": 50
+  },
+  {
+   "id": "a05",
+   "vector": 1,
+   "keyword": null,
+   "fused": 2,
+   "keyword_results": 6
+  },
+  {
+   "id": "a06",
+   "vector": 1,
+   "keyword": null,
+   "fused": 2,
+   "keyword_results": 4
+  },
+  {
+   "id": "a07",
+   "vector": 2,
+   "keyword": 1,
+   "fused": 2,
+   "keyword_results": 50
+  },
+  {
+   "id": "a08",
+   "vector": 2,
+   "keyword": null,
+   "fused": 9,
+   "keyword_results": 50
+  },
+  {
+   "id": "a09",
+   "vector": 1,
+   "keyword": null,
+   "fused": 21,
+   "keyword_results": 50
+  },
+  {
+   "id": "a10",
+   "vector": 2,
+   "keyword": null,
+   "fused": 4,
+   "keyword_results": 4
+  },
+  {
+   "id": "a11",
+   "vector": 1,
+   "keyword": null,
+   "fused": 2,
+   "keyword_results": 3
+  },
+  {
+   "id": "a12",
+   "vector": 1,
+   "keyword": 45,
+   "fused": 8,
+   "keyword_results": 50
+  },
+  {
+   "id": "a13",
+   "vector": 3,
+   "keyword": null,
+   "fused": 6,
+   "keyword_results": 4
+  },
+  {
+   "id": "a14",
+   "vector": 1,
+   "keyword": 3,
+   "fused": 1,
+   "keyword_results": 50
+  },
+  {
+   "id": "a15",
+   "vector": 1,
+   "keyword": null,
+   "fused": 2,
+   "keyword_results": 5
+  },
+  {
+   "id": "a16",
+   "vector": 1,
+   "keyword": 13,
+   "fused": 3,
+   "keyword_results": 50
+  },
+  {
+   "id": "a17",
+   "vector": 2,
+   "keyword": 14,
+   "fused": 2,
+   "keyword_results": 50
+  },
+  {
+   "id": "a18",
+   "vector": 1,
+   "keyword": 2,
+   "fused": 1,
+   "keyword_results": 50
+  }
+ ],
+ "set2": [
+  {
+   "id": "q01",
+   "vector": 5,
+   "keyword": null,
+   "fused": 12,
+   "keyword_results": 10
+  },
+  {
+   "id": "q02",
+   "vector": 2,
+   "keyword": null,
+   "fused": 8,
+   "keyword_results": 50
+  },
+  {
+   "id": "q03",
+   "vector": 1,
+   "keyword": null,
+   "fused": 6,
+   "keyword_results": 5
+  },
+  {
+   "id": "q04",
+   "vector": 6,
+   "keyword": null,
+   "fused": 10,
+   "keyword_results": 9
+  },
+  {
+   "id": "q05",
+   "vector": 2,
+   "keyword": null,
+   "fused": 4,
+   "keyword_results": 7
+  },
+  {
+   "id": "q06",
+   "vector": 1,
+   "keyword": 6,
+   "fused": 9,
+   "keyword_results": 50
+  },
+  {
+   "id": "q07",
+   "vector": 38,
+   "keyword": null,
+   "fused": 72,
+   "keyword_results": 50
+  },
+  {
+   "id": "q08",
+   "vector": 13,
+   "keyword": null,
+   "fused": 24,
+   "keyword_results": 50
+  },
+  {
+   "id": "q09",
+   "vector": 4,
+   "keyword": null,
+   "fused": 8,
+   "keyword_results": 5
+  },
+  {
+   "id": "q10",
+   "vector": 1,
+   "keyword": null,
+   "fused": 2,
+   "keyword_results": 8
+  },
+  {
+   "id": "q11",
+   "vector": 2,
+   "keyword": null,
+   "fused": 9,
+   "keyword_results": 50
+  },
+  {
+   "id": "q12",
+   "vector": 23,
+   "keyword": null,
+   "fused": 26,
+   "keyword_results": 3
+  },
+  {
+   "id": "q13",
+   "vector": null,
+   "keyword": null,
+   "fused": null,
+   "keyword_results": 6
+  },
+  {
+   "id": "q16",
+   "vector": 1,
+   "keyword": 1,
+   "fused": 1,
+   "keyword_results": 50
+  },
+  {
+   "id": "q17",
+   "vector": 1,
+   "keyword": 1,
+   "fused": 4,
+   "keyword_results": 50
+  },
+  {
+   "id": "q18",
+   "vector": 1,
+   "keyword": 16,
+   "fused": 3,
+   "keyword_results": 50
+  },
+  {
+   "id": "q19",
+   "vector": null,
+   "keyword": null,
+   "fused": null,
+   "keyword_results": 50
+  },
+  {
+   "id": "q20",
+   "vector": 2,
+   "keyword": null,
+   "fused": 19,
+   "keyword_results": 50
+  },
+  {
+   "id": "q21",
+   "vector": 6,
+   "keyword": 8,
+   "fused": 3,
+   "keyword_results": 50
+  },
+  {
+   "id": "q22",
+   "vector": 1,
+   "keyword": 23,
+   "fused": 3,
+   "keyword_results": 50
+  },
+  {
+   "id": "q23",
+   "vector": 17,
+   "keyword": null,
+   "fused": 36,
+   "keyword_results": 50
+  },
+  {
+   "id": "q24",
+   "vector": 1,
+   "keyword": null,
+   "fused": 7,
+   "keyword_results": 50
+  },
+  {
+   "id": "q25",
+   "vector": null,
+   "keyword": 19,
+   "fused": 38,
+   "keyword_results": 50
+  },
+  {
+   "id": "q26",
+   "vector": 1,
+   "keyword": 10,
+   "fused": 2,
+   "keyword_results": 50
+  },
+  {
+   "id": "q28",
+   "vector": 26,
+   "keyword": 45,
+   "fused": 9,
+   "keyword_results": 50
+  }
+ ]
+}
