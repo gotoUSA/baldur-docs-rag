@@ -1,0 +1,354 @@
+{
+ "model": "nlpai-lab/KURE-Reranker-nano",
+ "load_seconds": 18.6,
+ "sets": {
+  "set1": [
+   {
+    "id": "a01",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 55.16
+   },
+   {
+    "id": "a02",
+    "vector_best": 1,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 57.39
+   },
+   {
+    "id": "a03",
+    "vector_best": 1,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 46.17
+   },
+   {
+    "id": "a04",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 43.78
+   },
+   {
+    "id": "a05",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 39.97
+   },
+   {
+    "id": "a06",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 49.86
+   },
+   {
+    "id": "a07",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 46.53
+   },
+   {
+    "id": "a08",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 55.48
+   },
+   {
+    "id": "a09",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 45.5
+   },
+   {
+    "id": "a10",
+    "vector_best": 2,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 50.31
+   },
+   {
+    "id": "a11",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 43.95
+   },
+   {
+    "id": "a12",
+    "vector_best": 1,
+    "rerank_best": 3,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 54.83
+   },
+   {
+    "id": "a13",
+    "vector_best": 3,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 57.56
+   },
+   {
+    "id": "a14",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 45.78
+   },
+   {
+    "id": "a15",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 48.39
+   },
+   {
+    "id": "a16",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 46.52
+   },
+   {
+    "id": "a17",
+    "vector_best": 2,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 66.8
+   },
+   {
+    "id": "a18",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 49.08
+   }
+  ],
+  "set2": [
+   {
+    "id": "q01",
+    "vector_best": 5,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 53.62
+   },
+   {
+    "id": "q02",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 50.95
+   },
+   {
+    "id": "q03",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 53.16
+   },
+   {
+    "id": "q04",
+    "vector_best": 6,
+    "rerank_best": 17,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 64.33
+   },
+   {
+    "id": "q05",
+    "vector_best": 2,
+    "rerank_best": 7,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 58.8
+   },
+   {
+    "id": "q06",
+    "vector_best": 1,
+    "rerank_best": 4,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 56.97
+   },
+   {
+    "id": "q07",
+    "vector_best": 38,
+    "rerank_best": 41,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 71.26
+   },
+   {
+    "id": "q08",
+    "vector_best": 13,
+    "rerank_best": 13,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 53.55
+   },
+   {
+    "id": "q09",
+    "vector_best": 4,
+    "rerank_best": 6,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 55.83
+   },
+   {
+    "id": "q10",
+    "vector_best": 1,
+    "rerank_best": 7,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 42.19
+   },
+   {
+    "id": "q11",
+    "vector_best": 2,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 55.73
+   },
+   {
+    "id": "q12",
+    "vector_best": 23,
+    "rerank_best": 6,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 66.86
+   },
+   {
+    "id": "q13",
+    "vector_best": null,
+    "rerank_best": null,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 75.77
+   },
+   {
+    "id": "q16",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 68.86
+   },
+   {
+    "id": "q17",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 58.64
+   },
+   {
+    "id": "q18",
+    "vector_best": 1,
+    "rerank_best": 4,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 62.11
+   },
+   {
+    "id": "q19",
+    "vector_best": null,
+    "rerank_best": null,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 56.67
+   },
+   {
+    "id": "q20",
+    "vector_best": 2,
+    "rerank_best": 11,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 42.81
+   },
+   {
+    "id": "q21",
+    "vector_best": 6,
+    "rerank_best": 6,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 40.59
+   },
+   {
+    "id": "q22",
+    "vector_best": 1,
+    "rerank_best": 7,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 48.16
+   },
+   {
+    "id": "q23",
+    "vector_best": 17,
+    "rerank_best": 18,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 47.23
+   },
+   {
+    "id": "q24",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 44.16
+   },
+   {
+    "id": "q25",
+    "vector_best": null,
+    "rerank_best": null,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 36.47
+   },
+   {
+    "id": "q26",
+    "vector_best": 1,
+    "rerank_best": 9,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 54.97
+   },
+   {
+    "id": "q28",
+    "vector_best": 26,
+    "rerank_best": 12,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 48.91
+   }
+  ]
+ }
+}
