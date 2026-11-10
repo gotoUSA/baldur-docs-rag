@@ -58,6 +58,9 @@ class Settings(BaseSettings):
 
     chunk_max_chars: int = Field(default=2000, ge=200)
     search_top_k: int = Field(default=5, ge=1, le=50)
+    # Searches the model may request in `ask`, after the first one made by code.
+    # Each one costs another answer call, and the free tier allows 20 a day.
+    search_tool_max_calls: int = Field(default=1, ge=1, le=3)
 
     @classmethod
     def settings_customise_sources(

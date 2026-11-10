@@ -111,6 +111,18 @@ def test_answer_output_shows_the_answer_commit_and_cited_source():
     assert "[2] docs/a.md#3 A > B" in output
 
 
+def test_answer_output_shows_the_searches_the_model_asked_for():
+    hit = SearchHit("docs/a.md", 3, "A > B", "body", 0.7)
+
+    answered = cli.format_answer(
+        AnswerResult("abc123", "x", [CitedSource(6, hit)], ["per-service policy"])
+    )
+    refused = cli.format_answer(AnswerResult("abc123", None, [], ["recovery off"]))
+
+    assert "Searched again for: per-service policy" in answered
+    assert "Searched again for: recovery off" in refused
+
+
 def test_refusal_output_says_so_and_names_the_commit():
     output = cli.format_answer(AnswerResult("abc123", None, []))
 
@@ -124,7 +136,9 @@ def test_ask_prints_the_answer_and_exits_ok(monkeypatch, capsys):
     monkeypatch.setattr(cli, "GeminiEmbedder", lambda _settings: object())
     monkeypatch.setattr(cli, "GeminiAnswerer", lambda _settings: object())
     monkeypatch.setattr(cli, "Store", lambda _url: _FakeStore())
-    monkeypatch.setattr(cli, "run_answer", lambda *_args: AnswerResult("abc", None, []))
+    monkeypatch.setattr(
+        cli, "run_answer_with_search", lambda *_args: AnswerResult("abc", None, [])
+    )
 
     assert cli.main(["ask", "question"]) == cli.EXIT_OK
     assert cli.NOT_IN_DOCUMENTS in capsys.readouterr().out

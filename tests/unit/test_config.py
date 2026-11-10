@@ -44,6 +44,8 @@ def test_env_file_with_a_byte_order_mark_is_read(tmp_path):
         ("embedding_timeout_ms", 0),
         ("chunk_max_chars", 10),
         ("search_top_k", 0),
+        ("search_tool_max_calls", 0),
+        ("search_tool_max_calls", 4),
         ("answer_model", ""),
         ("answer_timeout_seconds", 0),
         ("eval_answer_interval_seconds", 0),

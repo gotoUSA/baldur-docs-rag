@@ -16,6 +16,11 @@
 - `python -m baldur_docs_rag evaluate`: runs the fixed question set in `eval/questions.json`
   and reports retrieval hit rate, citation match, refusal rates and graded answers, with the
   date, models and source commit. A run stopped by a quota resumes from the saved results.
+- `ask` can search again: when the first chunks lack the answer, Gemini may request one more
+  search with its own query (`search_tool_max_calls`, default 1, stated in the instruction it
+  is sent). The code runs the request only
+  after checking the tool name, the single `query` argument and its length, and the number of
+  searches, and fails otherwise. The output lists each query. `evaluate` is unchanged.
 - `docker-compose.yml`: local PostgreSQL with pgvector, reachable only from this machine.
 
 ### Fixed

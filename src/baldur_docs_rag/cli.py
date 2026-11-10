@@ -4,7 +4,11 @@ import argparse
 import logging
 import sys
 
-from baldur_docs_rag.answer import AnswerResult, GeminiAnswerer, run_answer
+from baldur_docs_rag.answer import (
+    AnswerResult,
+    GeminiAnswerer,
+    run_answer_with_search,
+)
 from baldur_docs_rag.config import load_settings
 from baldur_docs_rag.embedding import GeminiEmbedder
 from baldur_docs_rag.errors import BaldurDocsRagError, EmbeddingQuotaError
@@ -59,9 +63,10 @@ def format_search_result(result: SearchResult) -> str:
 
 def format_answer(result: AnswerResult) -> str:
     commit_line = f"Documents from baldur commit {result.source_commit}"
+    searched = [f"Searched again for: {query}" for query in result.searches]
     if result.answer is None:
-        return f"{NOT_IN_DOCUMENTS}\n\n{commit_line}"
-    lines = [result.answer, "", commit_line]
+        return "\n".join([NOT_IN_DOCUMENTS, "", commit_line, *searched])
+    lines = [result.answer, "", commit_line, *searched]
     for source in result.sources:
         hit = source.hit
         lines.append(
@@ -136,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "ask":
                 print(
                     format_answer(
-                        run_answer(
+                        run_answer_with_search(
                             args.question,
                             settings,
                             embedder,
