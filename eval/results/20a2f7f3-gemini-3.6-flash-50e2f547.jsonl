@@ -57,3 +57,5 @@
 {"kind": "answer", "id": "q26", "outcome": "answered", "answer": "You can monitor self-healing and recovery actions using metrics that Baldur records automatically whenever a circuit breaker changes state, a retry runs out of attempts, a dead-letter item is created or resolved, or a replay finishes. You can point your existing monitoring system to scrape these metrics from the Prometheus text-exposition page (served by default at `/prometheus` on port 9090, or at `prometheus/` under REST URLs in Django) or read the JSON view of the control-API metrics.", "citations": [1], "detail": null}
 {"kind": "answer", "id": "q27", "outcome": "refused", "answer": null, "citations": [], "detail": null}
 {"kind": "answer", "id": "q28", "outcome": "refused", "answer": null, "citations": [], "detail": null}
+{"kind": "answer", "id": "q29", "outcome": "refused", "answer": null, "citations": [], "detail": null}
+{"kind": "answer", "id": "q30", "outcome": "refused", "answer": null, "citations": [], "detail": null}
