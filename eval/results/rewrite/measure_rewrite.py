@@ -12,6 +12,7 @@ Run from the repository root: python eval/results/rewrite/measure_rewrite.py rew
 
 import json
 import sys
+import time
 from pathlib import Path
 
 from google.genai import _interactions
@@ -30,6 +31,9 @@ OUT_DIR = Path("eval/results/rewrite")
 REWRITES_FILE = OUT_DIR / "rewrites.json"
 RESULT_FILE = OUT_DIR / "result.json"
 STATUS_COMPLETED = "completed"
+# A real 429 on 2026-11-10 said the free tier allows 5 requests per minute, and
+# back-to-back calls hit it. One call every 13 seconds stays under that.
+CALL_INTERVAL_SECONDS = 13
 
 REWRITE_INSTRUCTION = (
     "You help search the documentation of Baldur, a Python library for handling "
@@ -118,6 +122,8 @@ def run_rewrites(limit: int) -> None:
             if made >= limit:
                 print(f"stopped at the limit of {limit} calls")
                 return
+            if made:
+                time.sleep(CALL_INTERVAL_SECONDS)
             try:
                 reply = rewrite_one(answerer, settings, q.question)
             except RewriteFailed as e:

@@ -5,7 +5,8 @@ import sys
 from pathlib import Path
 
 
-def build(questions_path: Path, results_path: Path) -> str:
+def build(questions_path: Path, results_path: Path, ids: set[str] | None = None) -> str:
+    """ids limits the output to those questions; None keeps every answered one."""
     questions = json.loads(questions_path.read_text(encoding="utf-8"))["questions"]
     rows = [
         json.loads(line)
@@ -19,6 +20,8 @@ def build(questions_path: Path, results_path: Path) -> str:
     for q in questions:
         a = answers.get(q["id"])
         if q["group"] != "answerable" or a is None or a["outcome"] != "answered":
+            continue
+        if ids is not None and q["id"] not in ids:
             continue
         parts.append(f"## {q['id']}\n")
         parts.append(f"### 질문\n\n{q['question']}\n")

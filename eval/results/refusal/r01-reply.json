@@ -1,0 +1,32 @@
+{
+ "id": "r01",
+ "model": "gemini-3.6-flash",
+ "source_commit": "20a2f7f3ecf44d2cec4721827a9bb9847748dcb0",
+ "chunks": [
+  [
+   "docs/troubleshooting.md",
+   6
+  ],
+  [
+   "docs/concepts/oss/circuit-breaker.md",
+   4
+  ],
+  [
+   "docs/why-i-built-baldur.md",
+   6
+  ],
+  [
+   "docs/concepts/foundations/storage-backends.md",
+   2
+  ],
+  [
+   "docs/concepts/oss/circuit-breaker.md",
+   3
+  ]
+ ],
+ "reply": {
+  "answerable": false,
+  "answer": "제시된 문서에서는 Baldur의 첫 공개 버전에서의 서킷 브레이커 기본 실패 임계값에 대한 정보를 제공하지 않습니다.",
+  "citations": []
+ }
+}
