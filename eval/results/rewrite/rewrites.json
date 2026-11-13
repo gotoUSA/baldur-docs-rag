@@ -109,6 +109,46 @@
     "q07": {
      "query": "prevent infinite retries max attempts limit retry count stop condition",
      "passage": "To prevent infinite retry loops when API calls repeatedly fail, set a maximum retry limit using the max_attempts configuration option. Baldur allows you to define stop conditions based on attempt counts, total elapsed time, or specific error types. When the specified maximum number of attempts is reached, Baldur stops retrying and raises a MaxRetriesExceeded exception."
+    },
+    "q08": {
+     "query": "integrate Baldur existing HTTP client minimal code changes",
+     "passage": "Baldur is designed to be integrated into existing Python projects with minimal code modifications. By wrapping your current HTTP client calls with Baldur's lightweight decorators or middleware, you can add resilience without rewriting core application logic. This unobtrusive design allows for quick adoption while maintaining your original HTTP request patterns."
+    },
+    "q09": {
+     "query": "reprocess failed requests queue background retry persistent storage",
+     "passage": "Baldur provides mechanisms to persist failed API requests to a queue for deferred processing. When an external service is unavailable, failed requests can be automatically saved to a supported backend such as Redis or a database. Background workers or scheduled tasks can subsequently fetch and reprocess these queued requests once service availability is restored."
+    },
+    "q10": {
+     "query": "baldur dry run mode test recovery strategies without execution",
+     "passage": "Baldur provides a dry-run feature that allows developers to simulate recovery behaviors without triggering actual side effects. When dry-run mode is enabled, execution paths such as retries, circuit breaker state changes, and fallback logic are evaluated and logged without performing real actions. This enables safe testing and verification of failure handling configurations before deploying to production environments."
+    },
+    "q11": {
+     "query": "logging API failures and retries in Baldur",
+     "passage": "Baldur includes built-in logging features to track API failures and automatic retry attempts in real time. Developers can integrate standard Python logging handlers to capture detailed event traces during request retries and fallback execution. Every failed attempt logs relevant error metadata, backoff durations, and current retry counts for easy debugging."
+    },
+    "q12": {
+     "query": "running Baldur across multiple server instances thread safety distributed execution",
+     "passage": "Baldur is designed to be stateless and thread-safe, allowing seamless execution across multiple server instances. For distributed circuit breaking or shared rate limiting, external backends such as Redis can be configured. This ensures consistent state tracking and prevents race conditions during high-concurrency workloads."
+    },
+    "q13": {
+     "query": "configure failure handling policies per service baldur python",
+     "passage": "Baldur allows developers to define distinct failure handling policies for each external service integration. You can configure unique retry strategies, circuit breakers, and fallbacks on a per-service basis using service-specific configuration objects or decorators. This granular control ensures that sensitive services adhere to strict resilience rules while non-critical endpoints utilize more relaxed settings."
+    },
+    "q16": {
+     "query": "difference between Baldur and regular retry decorator",
+     "passage": "Unlike standard retry decorators that blindly re-execute failed functions, Baldur incorporates intelligent circuit breaking and state management across calls. While simple retries can exacerbate service outages by hammering failing endpoints, Baldur tracks failure metrics and automatically trips breakers to prevent cascading failures. It also offers built-in fallback strategies and adaptive rate-limiting awareness for external API management."
+    },
+    "q17": {
+     "query": "baldur synchronous asynchronous api calls support decorator async sync",
+     "passage": "Baldur provides full support for both synchronous and asynchronous execution flows. Developers can apply decorators and resilience handlers seamlessly to standard Python functions as well as coroutines defined with async and await. This ensures unified error handling and retry strategies regardless of your application's concurrency model."
+    },
+    "q18": {
+     "query": "configure Baldur handle HTTP 429 rate limit retry",
+     "passage": "To handle HTTP 429 Too Many Requests responses in Baldur, you can specify status code triggers within your retry policy configuration. Configure the policy's retryable status codes to include 429 and set an exponential backoff strategy to respect rate limits. Baldur will automatically parse standard Retry-After headers if present to delay subsequent requests appropriately."
+    },
+    "q19": {
+     "query": "Baldur requests library integration HTTP retries circuit breaker",
+     "passage": "Baldur can be seamlessly integrated with the requests library in Python. By wrapping HTTP calls using Baldur decorators or utilizing its custom Session adapter, you can automatically manage network failures and API rate limits. This provides robust retry mechanisms, fallbacks, and circuit breaker patterns directly for your requests-based workflows."
     }
    }
   }
