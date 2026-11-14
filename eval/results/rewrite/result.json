@@ -1,0 +1,354 @@
+{
+ "model": "gemini-3.6-flash",
+ "top": 5,
+ "sets": {
+  "set1": [
+   {
+    "id": "a01",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a02",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a03",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a04",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a05",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a06",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a07",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a08",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a09",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": false,
+    "H-merge": true
+   },
+   {
+    "id": "a10",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a11",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a12",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a13",
+    "vector": true,
+    "R-replace": false,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a14",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a15",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a16",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a17",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "a18",
+    "vector": true,
+    "R-replace": false,
+    "R-merge": true,
+    "H-replace": false,
+    "H-merge": true
+   }
+  ],
+  "set2": [
+   {
+    "id": "q01",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q02",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q03",
+    "vector": true,
+    "R-replace": false,
+    "R-merge": true,
+    "H-replace": false,
+    "H-merge": true
+   },
+   {
+    "id": "q04",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": true,
+    "H-merge": false
+   },
+   {
+    "id": "q05",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q06",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q07",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": false,
+    "H-merge": false
+   },
+   {
+    "id": "q08",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q09",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q10",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q11",
+    "vector": true,
+    "R-replace": false,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q12",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q13",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": false,
+    "H-merge": false
+   },
+   {
+    "id": "q16",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q17",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q18",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q19",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": false,
+    "H-merge": false
+   },
+   {
+    "id": "q20",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q21",
+    "vector": false,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q22",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q23",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": true,
+    "H-merge": false
+   },
+   {
+    "id": "q24",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q25",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": false,
+    "H-merge": false
+   },
+   {
+    "id": "q26",
+    "vector": true,
+    "R-replace": true,
+    "R-merge": true,
+    "H-replace": true,
+    "H-merge": true
+   },
+   {
+    "id": "q28",
+    "vector": false,
+    "R-replace": false,
+    "R-merge": false,
+    "H-replace": true,
+    "H-merge": false
+   }
+  ]
+ }
+}

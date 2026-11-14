@@ -149,6 +149,38 @@
     "q19": {
      "query": "Baldur requests library integration HTTP retries circuit breaker",
      "passage": "Baldur can be seamlessly integrated with the requests library in Python. By wrapping HTTP calls using Baldur decorators or utilizing its custom Session adapter, you can automatically manage network failures and API rate limits. This provides robust retry mechanisms, fallbacks, and circuit breaker patterns directly for your requests-based workflows."
+    },
+    "q20": {
+     "query": "retry limit exceeded API failure exception fallback behavior",
+     "passage": "When an external API continues to fail beyond the configured retry limit, Baldur stops attempting further calls and raises a MaxRetriesExceeded exception. If a fallback function or default response was registered for the request, Baldur executes the fallback instead of propagating the error. This prevents cascading system failures and allows applications to handle persistent downstream outages gracefully."
+    },
+    "q21": {
+     "query": "inspect replay failed requests store history baldur API",
+     "passage": "Baldur provides a built-in failure storage mechanism to record requests that exhaust all retry attempts. You can inspect stored failed requests using the audit interface to analyze failure payloads, headers, and metadata. Recorded failed requests can be re-executed on demand using the replay functionality to resend them to the target service."
+    },
+    "q22": {
+     "query": "Baldur performance overhead successful API requests latency",
+     "passage": "Baldur is engineered to introduce minimal runtime overhead to standard API calls. For successful requests, the wrapper incurs only a tiny microsecond-level execution delay to perform internal state checks and metrics collection. Benchmarks demonstrate that this negligible latency has virtually no impact on overall application performance or throughput."
+    },
+    "q23": {
+     "query": "Baldur distinguish transient network errors application level errors",
+     "passage": "Baldur provides built-in exception classifiers that can differentiate between transient network glitches and application-level HTTP errors. Transient failures such as socket timeouts or connection resets automatically trigger retries or circuit breaking, whereas permanent application errors like 4xx status codes are passed through without retrying. Developers can also define custom error categorization logic to inspect specific status codes or exception attributes."
+    },
+    "q24": {
+     "query": "baldur redis external service requirements dependencies",
+     "passage": "Baldur is designed to operate completely in-memory and does not require Redis or any other external service to function. All failure tracking, circuit breaker logic, and state management are handled directly within your Python application process. This self-contained architecture ensures zero external infrastructure dependencies and minimal configuration setup out of the box."
+    },
+    "q25": {
+     "query": "disable automatic recovery specific API endpoints configuration",
+     "passage": "Baldur allows fine-grained control over error handling policies on a per-endpoint basis. To disable automatic recovery for a specific API endpoint, set the enable_recovery parameter to False in the endpoint's configuration decorator or policy definition. When disabled, any failure on that endpoint will immediately raise the underlying exception without triggering retries or fallback mechanisms."
+    },
+    "q26": {
+     "query": "baldur monitoring metrics logging recovered API calls production",
+     "passage": "Baldur provides built-in integrations with standard Python logging and telemetry exporters to track API recovery events in real time. Developers can attach custom event hooks or inspect Prometheus metrics emitted whenever a fallback or retry successfully resolves an external call failure. Monitoring these metrics on production dashboards allows you to verify recovery rates and system resilience under load."
+    },
+    "q28": {
+     "query": "distributed system shared state multiple services Baldur external API",
+     "passage": "Baldur is designed to operate seamlessly in distributed systems across multiple service instances. By leveraging centralized backends like Redis, Baldur synchronizes circuit breaker states and rate-limiting metrics across all services calling the same external API. This prevents cascading failures and ensures consistent rate-limit compliance across your entire infrastructure."
     }
    }
   }

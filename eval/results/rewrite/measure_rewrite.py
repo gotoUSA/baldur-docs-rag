@@ -23,6 +23,7 @@ from pydantic import BaseModel, ValidationError
 from baldur_docs_rag.answer import GeminiAnswerer, _run_with_deadline
 from baldur_docs_rag.config import Settings
 from baldur_docs_rag.embedding import DOCUMENT_TEMPLATE, NO_TITLE, GeminiEmbedder
+from baldur_docs_rag.errors import EmbeddingError, EmbeddingQuotaError
 from baldur_docs_rag.evaluation import QuestionGroup, load_questions
 from baldur_docs_rag.store import Store
 
@@ -34,6 +35,13 @@ STATUS_COMPLETED = "completed"
 # A real 429 on 2026-11-10 said the free tier allows 5 requests per minute, and
 # back-to-back calls hit it. One call every 13 seconds stays under that.
 CALL_INTERVAL_SECONDS = 13
+# A real 429 on 2026-11-14 said embeddings allow 100 requests per minute on the free
+# tier; score sends about 129 in a row. One every 0.7 seconds stays under that.
+EMBED_INTERVAL_SECONDS = 0.7
+# 503s came in a row on 2026-11-14 and each stopped the whole score run. A 503 is
+# retried after a pause; a 429 (EmbeddingQuotaError) still stops the run.
+EMBED_RETRY_ATTEMPTS = 4
+EMBED_RETRY_WAIT_SECONDS = 20
 
 REWRITE_INSTRUCTION = (
     "You help search the documentation of Baldur, a Python library for handling "
@@ -147,6 +155,19 @@ def interleave(first: list, second: list, top: int) -> list:
     return merged[:top]
 
 
+def with_retry(call):
+    for attempt in range(1, EMBED_RETRY_ATTEMPTS + 1):
+        try:
+            return call()
+        except EmbeddingQuotaError:
+            raise
+        except EmbeddingError as e:
+            if attempt == EMBED_RETRY_ATTEMPTS:
+                raise
+            print(f"embedding failed ({e}), retry {attempt} in {EMBED_RETRY_WAIT_SECONDS} s")
+            time.sleep(EMBED_RETRY_WAIT_SECONDS)
+
+
 def score() -> None:
     settings = Settings()
     top = settings.search_top_k
@@ -156,6 +177,7 @@ def score() -> None:
     with Store(settings.database_url) as store:
 
         def refs(embedding):
+            time.sleep(EMBED_INTERVAL_SECONDS)
             return [
                 (h.source_path, h.chunk_index) for h in store.search(embedding, top)
             ]
@@ -173,12 +195,14 @@ def score() -> None:
             for q in questions:
                 reply = block["rows"][q.id]
                 expected = {(c.source_path, c.chunk_index) for c in q.expected_chunks}
-                original = refs(embedder.embed_query(q.question))
-                by_query = refs(embedder.embed_query(reply["query"]))
+                original = refs(with_retry(lambda: embedder.embed_query(q.question)))
+                by_query = refs(with_retry(lambda: embedder.embed_query(reply["query"])))
                 passage_text = DOCUMENT_TEMPLATE.format(
                     title=NO_TITLE, text=reply["passage"]
                 )
-                by_passage = refs(embedder.embed_documents([passage_text])[0])
+                by_passage = refs(
+                    with_retry(lambda: embedder.embed_documents([passage_text])[0])
+                )
                 candidates = {
                     "vector": original,
                     "R-replace": by_query,
