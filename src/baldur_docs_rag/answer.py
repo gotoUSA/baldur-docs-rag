@@ -67,7 +67,7 @@ SEARCH_TOOL = {
 
 # The evaluation keeps SYSTEM_INSTRUCTION unchanged, so its numbers stay comparable.
 def search_system_instruction(max_searches: int) -> str:
-    # The model is told the limit because a request past it fails the whole answer.
+    # The instruction states the limit because a call past it fails the whole answer.
     return SYSTEM_INSTRUCTION + (
         f" If the evidence does not contain the answer, you may call {SEARCH_TOOL_NAME} "
         "with a query in different words from the question before you answer. "
@@ -194,7 +194,7 @@ class GeminiAnswerer:
         hits: Sequence[SearchHit],
         search: Callable[[str], Sequence[SearchHit]],
     ) -> SearchedAnswer:
-        """Let the model request more searches, each checked here before it runs."""
+        """Run search_docs calls from the model response, each checked here first."""
         evidence = list(hits)
         searches: list[str] = []
         instruction = search_system_instruction(self._max_searches)
@@ -304,7 +304,7 @@ def _checked_search_request(
     def blocked(reason: str) -> AnswerRejectedError:
         logger.warning("answer.tool_call_blocked", extra={"reason": reason})
         return AnswerRejectedError(
-            f"Gemini made a search request that was not run: {reason}"
+            f"Search tool call from Gemini was not run: {reason}"
         )
 
     if status != STATUS_REQUIRES_ACTION:
@@ -393,7 +393,7 @@ def run_answer_with_search(
     answerer: SearchingAnswerer,
     store: Store,
 ) -> AnswerResult:
-    """Like run_answer, but the model may ask for more searches. Used by ask only."""
+    """Like run_answer, but the model response may call search_docs. Used by ask only."""
     found = run_search(question, settings, embedder, store)
     if not found.hits:
         return AnswerResult(found.source_commit, answer=None, sources=[])
