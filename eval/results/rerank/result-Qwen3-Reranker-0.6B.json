@@ -1,0 +1,357 @@
+{
+ "model": "Qwen/Qwen3-Reranker-0.6B",
+ "batch_size": 4,
+ "device": "cuda:0",
+ "dtype": "torch.float32",
+ "load_seconds": 36.0,
+ "sets": {
+  "set1": [
+   {
+    "id": "a01",
+    "vector_best": 2,
+    "rerank_best": 8,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 10.59
+   },
+   {
+    "id": "a02",
+    "vector_best": 1,
+    "rerank_best": 4,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 9.34
+   },
+   {
+    "id": "a03",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 7.25
+   },
+   {
+    "id": "a04",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 4.81
+   },
+   {
+    "id": "a05",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 5.86
+   },
+   {
+    "id": "a06",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 7.78
+   },
+   {
+    "id": "a07",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 7.83
+   },
+   {
+    "id": "a08",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 10.44
+   },
+   {
+    "id": "a09",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 6.84
+   },
+   {
+    "id": "a10",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 7.56
+   },
+   {
+    "id": "a11",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 6.78
+   },
+   {
+    "id": "a12",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 8.3
+   },
+   {
+    "id": "a13",
+    "vector_best": 3,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 9.62
+   },
+   {
+    "id": "a14",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 7.61
+   },
+   {
+    "id": "a15",
+    "vector_best": 1,
+    "rerank_best": 15,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 8.02
+   },
+   {
+    "id": "a16",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 6.3
+   },
+   {
+    "id": "a17",
+    "vector_best": 2,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 9.12
+   },
+   {
+    "id": "a18",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 8.39
+   }
+  ],
+  "set2": [
+   {
+    "id": "q01",
+    "vector_best": 5,
+    "rerank_best": 9,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 9.12
+   },
+   {
+    "id": "q02",
+    "vector_best": 2,
+    "rerank_best": 3,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 6.41
+   },
+   {
+    "id": "q03",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 8.5
+   },
+   {
+    "id": "q04",
+    "vector_best": 6,
+    "rerank_best": 17,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 12.53
+   },
+   {
+    "id": "q05",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 9.42
+   },
+   {
+    "id": "q06",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 9.84
+   },
+   {
+    "id": "q07",
+    "vector_best": 38,
+    "rerank_best": 29,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 10.77
+   },
+   {
+    "id": "q08",
+    "vector_best": 13,
+    "rerank_best": 44,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 9.84
+   },
+   {
+    "id": "q09",
+    "vector_best": 4,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 11.8
+   },
+   {
+    "id": "q10",
+    "vector_best": 1,
+    "rerank_best": 4,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 6.19
+   },
+   {
+    "id": "q11",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 10.72
+   },
+   {
+    "id": "q12",
+    "vector_best": 23,
+    "rerank_best": 8,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 9.75
+   },
+   {
+    "id": "q13",
+    "vector_best": null,
+    "rerank_best": null,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 10.19
+   },
+   {
+    "id": "q16",
+    "vector_best": 1,
+    "rerank_best": 3,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 10.5
+   },
+   {
+    "id": "q17",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 8.45
+   },
+   {
+    "id": "q18",
+    "vector_best": 1,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 9.78
+   },
+   {
+    "id": "q19",
+    "vector_best": null,
+    "rerank_best": null,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 7.94
+   },
+   {
+    "id": "q20",
+    "vector_best": 2,
+    "rerank_best": 2,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 8.2
+   },
+   {
+    "id": "q21",
+    "vector_best": 6,
+    "rerank_best": 17,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 7.8
+   },
+   {
+    "id": "q22",
+    "vector_best": 1,
+    "rerank_best": 6,
+    "vector_hit": true,
+    "rerank_hit": false,
+    "seconds": 10.06
+   },
+   {
+    "id": "q23",
+    "vector_best": 17,
+    "rerank_best": 32,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 8.56
+   },
+   {
+    "id": "q24",
+    "vector_best": 1,
+    "rerank_best": 1,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 8.25
+   },
+   {
+    "id": "q25",
+    "vector_best": null,
+    "rerank_best": null,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 7.36
+   },
+   {
+    "id": "q26",
+    "vector_best": 1,
+    "rerank_best": 4,
+    "vector_hit": true,
+    "rerank_hit": true,
+    "seconds": 10.44
+   },
+   {
+    "id": "q28",
+    "vector_best": 26,
+    "rerank_best": 18,
+    "vector_hit": false,
+    "rerank_hit": false,
+    "seconds": 10.77
+   }
+  ]
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "model": "gemini-3.6-flash",
+ "top": 5,
+ "source_commit": "20a2f7f3ecf44d2cec4721827a9bb9847748dcb0",
+ "questions_sha256": "0edbe30dee2c2f9a4281b120b1dc4ff960ba09f18a12bbab351cb07591bc9b20",
+ "rows": {
+  "t02": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t03": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t05": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t10": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t12": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t15": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t19": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t21": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t26": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t29": {
+   "vector": "refused",
+   "h_merge": "refused"
+  },
+  "t30": {
+   "vector": "refused",
+   "h_merge": "refused"
+  }
+ },
+ "summary": {
+  "questions": 11,
+  "outcomes": {
+   "vector": {
+    "answered": 0,
+    "refused": 11,
+    "rejected": 0
+   },
+   "h_merge": {
+    "answered": 0,
+    "refused": 11,
+    "rejected": 0
+   }
+  },
+  "h_merge_answered_vector_not": [],
+  "vector_answered_h_merge_not": [],
+  "net_extra_answers": 0,
+  "passes": true
+ }
+}

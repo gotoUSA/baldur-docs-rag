@@ -1,0 +1,115 @@
+{
+ "model": "gemini-3.6-flash",
+ "top": 5,
+ "questions_sha256": "0edbe30dee2c2f9a4281b120b1dc4ff960ba09f18a12bbab351cb07591bc9b20",
+ "rows": [
+  {
+   "id": "t01",
+   "vector_rank": 1,
+   "h_merge_rank": 1
+  },
+  {
+   "id": "t04",
+   "vector_rank": 1,
+   "h_merge_rank": 1
+  },
+  {
+   "id": "t06",
+   "vector_rank": null,
+   "h_merge_rank": null
+  },
+  {
+   "id": "t07",
+   "vector_rank": null,
+   "h_merge_rank": 2
+  },
+  {
+   "id": "t08",
+   "vector_rank": 1,
+   "h_merge_rank": 1
+  },
+  {
+   "id": "t09",
+   "vector_rank": null,
+   "h_merge_rank": null
+  },
+  {
+   "id": "t11",
+   "vector_rank": null,
+   "h_merge_rank": null
+  },
+  {
+   "id": "t13",
+   "vector_rank": 2,
+   "h_merge_rank": 3
+  },
+  {
+   "id": "t14",
+   "vector_rank": 2,
+   "h_merge_rank": 2
+  },
+  {
+   "id": "t16",
+   "vector_rank": null,
+   "h_merge_rank": null
+  },
+  {
+   "id": "t18",
+   "vector_rank": null,
+   "h_merge_rank": null
+  },
+  {
+   "id": "t20",
+   "vector_rank": 1,
+   "h_merge_rank": 1
+  },
+  {
+   "id": "t22",
+   "vector_rank": 1,
+   "h_merge_rank": 1
+  },
+  {
+   "id": "t23",
+   "vector_rank": 2,
+   "h_merge_rank": 2
+  },
+  {
+   "id": "t24",
+   "vector_rank": 1,
+   "h_merge_rank": 1
+  },
+  {
+   "id": "t25",
+   "vector_rank": null,
+   "h_merge_rank": 2
+  },
+  {
+   "id": "t27",
+   "vector_rank": 4,
+   "h_merge_rank": 4
+  },
+  {
+   "id": "t28",
+   "vector_rank": null,
+   "h_merge_rank": null
+  }
+ ],
+ "summary": {
+  "questions": 18,
+  "vector_hits": 10,
+  "h_merge_hits": 12,
+  "h_merge_only": [
+   "t07",
+   "t25"
+  ],
+  "vector_only": [],
+  "net": 2,
+  "vector_rank1": 6,
+  "h_merge_rank1": 6,
+  "vector_mrr5": 0.4305555555555556,
+  "h_merge_mrr5": 0.47685185185185186,
+  "rank_better": 2,
+  "rank_worse": 1,
+  "randomization_p_one_sided": 0.25
+ }
+}

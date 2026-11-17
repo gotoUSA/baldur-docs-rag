@@ -9,6 +9,9 @@ the four pre-registered candidates and report top-5 hits.
 Set 3 (rewrite3, score3) compares only vector and the picked H-merge. It prints ids,
 counts and ranks only, never question, rewrite or chunk text, and keeps its rewrites
 outside the repository, because the set stays sealed.
+Criterion 4 (criterion4) rewrites the 11 set-3 questions without an answer, then
+answers each one twice, from the vector hits and from the H-merge hits, the way
+evaluate answers, and counts which side answered. Answers stay outside the repository.
 
 The plan and the selection rule are in eval/RECORD.md, written before any result.
 Run from the repository root: python eval/results/rewrite/measure_rewrite.py rewrite
@@ -29,9 +32,19 @@ from pydantic import BaseModel, ValidationError
 from baldur_docs_rag.answer import GeminiAnswerer, _run_with_deadline
 from baldur_docs_rag.config import Settings
 from baldur_docs_rag.embedding import DOCUMENT_TEMPLATE, NO_TITLE, GeminiEmbedder
-from baldur_docs_rag.errors import EmbeddingError, EmbeddingQuotaError
-from baldur_docs_rag.evaluation import QuestionGroup, load_questions
-from baldur_docs_rag.store import Store
+from baldur_docs_rag.errors import (
+    AnswerError,
+    EmbeddingError,
+    EmbeddingQuotaError,
+)
+from baldur_docs_rag.evaluation import (
+    Outcome,
+    QuestionGroup,
+    _answer_record,
+    load_questions,
+)
+from baldur_docs_rag.search import run_search
+from baldur_docs_rag.store import SearchHit, Store
 
 SETS = {"set1": Path("eval/questions.json"), "set2": Path("eval/questions-2.json")}
 OUT_DIR = Path("eval/results/rewrite")
@@ -40,6 +53,11 @@ RESULT_FILE = OUT_DIR / "result.json"
 SET3 = {"set3": Path("C:/tmp/baldur-questions-set3/questions-3.json")}
 SET3_REWRITES_FILE = Path("C:/tmp/baldur-questions-set3/rewrite/rewrites-3.json")
 SET3_RESULT_FILE = OUT_DIR / "result-3.json"
+SET3_UNANSWERABLE = {"set3-unanswerable": SET3["set3"]}
+UNANSWERABLE_GROUPS = (QuestionGroup.RELATED_UNANSWERABLE, QuestionGroup.UNRELATED)
+SET3_ANSWERS_FILE = Path("C:/tmp/baldur-questions-set3/rewrite/answers-3.json")
+CRITERION4_RESULT_FILE = OUT_DIR / "result-3-criterion4.json"
+ANSWER_SIDES = ("vector", "h_merge")
 STATUS_COMPLETED = "completed"
 # A real 429 on 2026-11-10 said the free tier allows 5 requests per minute, and
 # back-to-back calls hit it. One call every 13 seconds stays under that.
@@ -105,11 +123,9 @@ def rewrite_one(answerer: GeminiAnswerer, settings: Settings, question: str) -> 
     return reply
 
 
-def answerable(path: Path):
+def answerable(path: Path, groups=(QuestionGroup.ANSWERABLE,)):
     questions, digest = load_questions(path)
-    return digest, [
-        q for q in questions.questions if q.group is QuestionGroup.ANSWERABLE
-    ]
+    return digest, [q for q in questions.questions if q.group in groups]
 
 
 def load_rewrites(rewrites_file: Path) -> dict:
@@ -118,7 +134,10 @@ def load_rewrites(rewrites_file: Path) -> dict:
     return {"model": None, "instruction": REWRITE_INSTRUCTION, "sets": {}}
 
 
-def run_rewrites(limit: int, sets: dict, rewrites_file: Path) -> None:
+def run_rewrites(
+    limit: int, sets: dict, rewrites_file: Path, groups=(QuestionGroup.ANSWERABLE,)
+) -> tuple[int, bool]:
+    """Returns the calls made and whether every rewrite is now saved."""
     settings = Settings()
     answerer = GeminiAnswerer(settings)
     data = load_rewrites(rewrites_file)
@@ -129,7 +148,7 @@ def run_rewrites(limit: int, sets: dict, rewrites_file: Path) -> None:
     data["model"] = settings.answer_model
     made = 0
     for label, path in sets.items():
-        digest, questions = answerable(path)
+        digest, questions = answerable(path, groups)
         block = data["sets"].setdefault(label, {"questions_sha256": digest, "rows": {}})
         if block["questions_sha256"] != digest:
             raise SystemExit(f"{label} questions changed since the saved rewrites")
@@ -138,14 +157,14 @@ def run_rewrites(limit: int, sets: dict, rewrites_file: Path) -> None:
                 continue
             if made >= limit:
                 print(f"stopped at the limit of {limit} calls")
-                return
+                return made, False
             if made:
                 time.sleep(CALL_INTERVAL_SECONDS)
             try:
                 reply = rewrite_one(answerer, settings, q.question)
             except RewriteFailed as e:
                 print(f"{label} {q.id} failed, stopping: {e}")
-                return
+                return made + 1, False
             block["rows"][q.id] = reply.model_dump()
             made += 1
             rewrites_file.parent.mkdir(parents=True, exist_ok=True)
@@ -154,6 +173,7 @@ def run_rewrites(limit: int, sets: dict, rewrites_file: Path) -> None:
             )
             print(f"{label} {q.id} saved ({made} calls this run)", flush=True)
     print("all rewrites saved")
+    return made, True
 
 
 def interleave(first: list, second: list, top: int) -> list:
@@ -339,6 +359,139 @@ def score3() -> None:
     print("saved", SET3_RESULT_FILE)
 
 
+def interleave_hits(first: list[SearchHit], second: list[SearchHit], top: int):
+    """interleave for full hits: the same chunk found twice has two scores, so
+    chunks are matched by place, not by the whole hit."""
+    by_ref = {(h.source_path, h.chunk_index): h for h in second + first}
+    refs = interleave(
+        [(h.source_path, h.chunk_index) for h in first],
+        [(h.source_path, h.chunk_index) for h in second],
+        top,
+    )
+    return [by_ref[ref] for ref in refs]
+
+
+def criterion4_summary(rows: dict) -> dict:
+    """Pre-registered criterion 4: only outcome answered counts as answering, so a
+    refused or rejected reply both count as not answering."""
+
+    def answered(row, side):
+        return row[side]["outcome"] == Outcome.ANSWERED
+
+    only_h = sorted(
+        i
+        for i, r in rows.items()
+        if answered(r, "h_merge") and not answered(r, "vector")
+    )
+    only_v = sorted(
+        i
+        for i, r in rows.items()
+        if answered(r, "vector") and not answered(r, "h_merge")
+    )
+    return {
+        "questions": len(rows),
+        "outcomes": {
+            side: {
+                o.value: sum(r[side]["outcome"] == o for r in rows.values())
+                for o in Outcome
+            }
+            for side in ANSWER_SIDES
+        },
+        "h_merge_answered_vector_not": only_h,
+        "vector_answered_h_merge_not": only_v,
+        "net_extra_answers": len(only_h) - len(only_v),
+        "passes": len(only_h) - len(only_v) <= 1,
+    }
+
+
+def criterion4(limit: int) -> None:
+    made, rewrites_done = run_rewrites(
+        limit, SET3_UNANSWERABLE, SET3_REWRITES_FILE, UNANSWERABLE_GROUPS
+    )
+    if not rewrites_done:
+        return
+    settings = Settings()
+    top = settings.search_top_k
+    embedder = GeminiEmbedder(settings)
+    answerer = GeminiAnswerer(settings)
+    ((label, path),) = SET3_UNANSWERABLE.items()
+    digest, questions = answerable(path, UNANSWERABLE_GROUPS)
+    rewrites = load_rewrites(SET3_REWRITES_FILE)["sets"][label]["rows"]
+    if SET3_ANSWERS_FILE.exists():
+        data = json.loads(SET3_ANSWERS_FILE.read_text(encoding="utf-8"))
+    else:
+        data = {"model": settings.answer_model, "questions_sha256": digest, "rows": {}}
+    if data["questions_sha256"] != digest or data["model"] != settings.answer_model:
+        raise SystemExit("The saved answers used other questions or another model")
+    with Store(settings.database_url) as store:
+        state = store.read_state()
+        if state is None or state.completed_at is None:
+            raise SystemExit("No complete ingest found")
+        for q in questions:
+            row = data["rows"].setdefault(q.id, {})
+            if all(side in row for side in ANSWER_SIDES):
+                continue
+            time.sleep(EMBED_INTERVAL_SECONDS)
+            found = with_retry(
+                lambda: run_search(q.question, settings, embedder, store)
+            )
+            passage_text = DOCUMENT_TEMPLATE.format(
+                title=NO_TITLE, text=rewrites[q.id]["passage"]
+            )
+            time.sleep(EMBED_INTERVAL_SECONDS)
+            by_passage = store.search(
+                with_retry(lambda: embedder.embed_documents([passage_text])[0]), top
+            )
+            hits = {
+                "vector": found.hits,
+                "h_merge": interleave_hits(found.hits, by_passage, top),
+            }
+            for side in ANSWER_SIDES:
+                if side in row:
+                    continue
+                if made >= limit:
+                    print(f"stopped at the limit of {limit} calls")
+                    return
+                if made:
+                    time.sleep(CALL_INTERVAL_SECONDS)
+                made += 1
+                try:
+                    record = _answer_record(
+                        q, hits[side], found.source_commit, answerer
+                    )
+                except AnswerError as e:
+                    print(f"{q.id} {side} failed, stopping: {type(e).__name__}: {e}")
+                    return
+                row[side] = {
+                    "outcome": record.outcome.value,
+                    "answer": record.answer,
+                    "citations": record.citations,
+                    "detail": record.detail,
+                    "hits": [[h.source_path, h.chunk_index] for h in hits[side]],
+                }
+                SET3_ANSWERS_FILE.write_text(
+                    json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8"
+                )
+                print(f"{q.id} {side} saved ({made} calls this run)", flush=True)
+    summary = criterion4_summary(data["rows"])
+    report = {
+        "model": settings.answer_model,
+        "top": top,
+        "source_commit": state.source_commit,
+        "questions_sha256": digest,
+        "rows": {
+            i: {side: r[side]["outcome"] for side in ANSWER_SIDES}
+            for i, r in data["rows"].items()
+        },
+        "summary": summary,
+    }
+    CRITERION4_RESULT_FILE.write_text(
+        json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+    print(json.dumps(summary, ensure_ascii=False))
+    print("saved", CRITERION4_RESULT_FILE)
+
+
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     if sys.argv[1] == "rewrite":
@@ -349,7 +502,10 @@ if __name__ == "__main__":
         run_rewrites(int(sys.argv[2]), SET3, SET3_REWRITES_FILE)
     elif sys.argv[1] == "score3":
         score3()
+    elif sys.argv[1] == "criterion4":
+        criterion4(int(sys.argv[2]))
     else:
         raise SystemExit(
             "usage: measure_rewrite.py rewrite LIMIT | score | rewrite3 LIMIT | score3"
+            " | criterion4 LIMIT"
         )

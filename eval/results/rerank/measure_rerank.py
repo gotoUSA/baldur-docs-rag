@@ -1,7 +1,8 @@
 """Compare vector top-5 with cross-encoder reranking of the vector top 50, on sets 1 and 2 only.
 
 Step 1 (candidates): embed each answerable question once and save its top 50 chunks.
-Step 2 (rerank MODEL_ID): rescore those saved candidates locally and report top-5 hits.
+Step 2 (rerank MODEL_ID [BATCH] [DEVICE] [DTYPE]): rescore those saved candidates locally
+and report top-5 hits. DEVICE defaults to cpu; DTYPE (e.g. float32) defaults to the model's own.
 The sealed third set is never read here.
 """
 
@@ -68,21 +69,27 @@ def best_rank(
     return min(ranks) if ranks else None
 
 
-def rerank(model_id: str, batch_size: int) -> None:
+def rerank(model_id: str, batch_size: int, device: str, dtype: str | None) -> None:
+    import torch
     from sentence_transformers import CrossEncoder
 
+    model_kwargs = {"dtype": getattr(torch, dtype)} if dtype else None
     loaded_at = time.monotonic()
     if model_id == "nlpai-lab/KURE-Reranker-nano":
         # The model card constructs it with this max_length.
-        model = CrossEncoder(model_id, max_length=8192, device="cpu")
+        model = CrossEncoder(
+            model_id, max_length=8192, device=device, model_kwargs=model_kwargs
+        )
     else:
-        model = CrossEncoder(model_id, device="cpu")
+        model = CrossEncoder(model_id, device=device, model_kwargs=model_kwargs)
     load_seconds = time.monotonic() - loaded_at
 
     data = json.loads(CANDIDATES_FILE.read_text(encoding="utf-8"))
     report = {
         "model": model_id,
         "batch_size": batch_size,
+        "device": str(model.device),
+        "dtype": str(model.dtype),
         "load_seconds": round(load_seconds, 1),
         "sets": {},
     }
@@ -134,4 +141,10 @@ if __name__ == "__main__":
     if sys.argv[1] == "candidates":
         collect_candidates()
     else:
-        rerank(sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_BATCH_SIZE)
+        args = sys.argv[1:] + [None] * 3
+        rerank(
+            args[0],
+            int(args[1]) if args[1] else DEFAULT_BATCH_SIZE,
+            args[2] or "cpu",
+            args[3],
+        )
